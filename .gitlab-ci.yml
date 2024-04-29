@@ -1,39 +1,39 @@
-image: docker:latest
+# image: docker:latest
 
-services:
-  - docker:dind
+# services:
+#   - docker:dind
 
-stages:
-  - build
-  - test
-  # - push
+# stages:
+#   - build
+#   - test
+#   # - push
 
-variables:
-  IMAGE_NAME: thecoolvision-app
-  CONTAINER_NAME: test-container
+# variables:
+#   IMAGE_NAME: thecoolvision-app
+#   CONTAINER_NAME: test-container
 
-  DOCKER_TLS_CERTDIR: ""
-  DOCKER_DRIVER: overlay2
+#   DOCKER_TLS_CERTDIR: ""
+#   DOCKER_DRIVER: overlay2
 
 
-before_script:
-  - docker info
+# before_script:
+#   - docker info
 
-build:
-  stage: build
-  script:
-    - docker build -t $IMAGE_NAME .
-
-test:
-  stage: test
-  script:
-    - docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
-    - sleep 5  # Give the server some time to start
-    - 'if [ "$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:5000)" != "200" ]; then exit 1; fi'
-    - docker rm -f $CONTAINER_NAME
-
-# push:
-#   stage: push
+# build:
+#   stage: build
 #   script:
-#     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN localhost:5000
-#     - docker push $IMAGE_NAME
+#     - docker build -t $IMAGE_NAME .
+
+# test:
+#   stage: test
+#   script:
+#     - docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
+#     - sleep 5  # Give the server some time to start
+#     - 'if [ "$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:5000)" != "200" ]; then exit 1; fi'
+#     - docker rm -f $CONTAINER_NAME
+
+# # push:
+# #   stage: push
+# #   script:
+# #     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN localhost:5000
+# #     - docker push $IMAGE_NAME
