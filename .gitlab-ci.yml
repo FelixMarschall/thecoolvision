@@ -5,12 +5,13 @@ services:
 
 stages:
   - build
-  - push
+  - test
+  # - push
 
 variables:
-  DOCKER_HOST: tcp://docker:2375/
-  DOCKER_DRIVER: overlay2
-  IMAGE_NAME: localhost:5000/my-flask-app
+  IMAGE_NAME: thecoolvision-app
+  CONTAINER_NAME: test-container
+
 
 before_script:
   - docker info
@@ -20,8 +21,16 @@ build:
   script:
     - docker build -t $IMAGE_NAME .
 
-push:
-  stage: push
+test:
+  stage: test
   script:
-    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN localhost:5000
-    - docker push $IMAGE_NAME
+    - docker run -d --name $CONTAINER_NAME -p 5000:5000 $IMAGE_NAME
+    - sleep 5  # Give the server some time to start
+    - 'if [ "$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:5000)" != "200" ]; then exit 1; fi'
+    - docker rm -f $CONTAINER_NAME
+    
+# push:
+#   stage: push
+#   script:
+#     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN localhost:5000
+#     - docker push $IMAGE_NAME
