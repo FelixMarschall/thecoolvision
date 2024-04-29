@@ -12,6 +12,10 @@ variables:
   IMAGE_NAME: thecoolvision-app
   CONTAINER_NAME: test-container
 
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+
 
 before_script:
   - docker info
@@ -28,7 +32,7 @@ test:
     - sleep 5  # Give the server some time to start
     - 'if [ "$(curl -o /dev/null -s -w "%{http_code}\n" http://localhost:5000)" != "200" ]; then exit 1; fi'
     - docker rm -f $CONTAINER_NAME
-    
+
 # push:
 #   stage: push
 #   script:
