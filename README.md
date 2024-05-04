@@ -6,7 +6,7 @@
 ## Installation
 Use docker to build and run the flask app
 
-1. cd into the ```app``` dir
+1. cd into the folder where this file is.
 2. Build
 ``` 
 docker build -t coolvision-app .

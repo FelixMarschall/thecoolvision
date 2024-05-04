@@ -1,0 +1,54 @@
+<!-- templates/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Video Stream</title>
+</head>
+<body>
+    <h1>Webcam Video Stream</h1>
+
+    <video id="webcamVideo" width="640" height="480" autoplay></video>
+
+    <script>
+        const videoElement = document.getElementById('webcamVideo');
+
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(function(stream) {
+                videoElement.srcObject = stream;
+
+                // Send the stream to the Flask server
+                const mediaRecorder = new MediaRecorder(stream);
+
+                mediaRecorder.ondataavailable = function(event) {
+                    if (event.data.size > 0) {
+                        const formData = new FormData();
+                        formData.append('video', event.data, 'webcam_stream.webm');
+
+                        fetch('/process_video', {
+                            method: 'POST',
+                            body: formData
+                        })
+                        .then(response => {
+                            if (response.ok) {
+                                console.log('Video data sent successfully');
+                            } else {
+                                console.error('Failed to send video data');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error sending video data:', error);
+                        });
+                    }
+                };
+
+                mediaRecorder.start(1000); // Send data every 1 second
+            })
+            .catch(function(error) {
+                console.error('Error accessing webcam:', error);
+            });
+    </script>
+</body>
+</html>
