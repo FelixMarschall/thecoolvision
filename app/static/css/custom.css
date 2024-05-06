@@ -10,10 +10,24 @@
     gap: 10px;
 }
 
+.mhd-button {
+    width: 30%;
+    font-size: 1.5em;
+    padding: 10px;
+}
+
+.big-button-action {
+    width: 30%;
+    font-size: 1.5em;
+    padding: 10px;
+}
+
 .button-grid {
     display: grid;
     grid-template-columns: auto auto;
     gap: 10px;
+    padding: 10px;
+    padding-top: 20px;
 }
 
 .button-row {
@@ -21,4 +35,27 @@
     justify-content: space-between;
     /* This will put some space between the buttons */
     gap: 10px;
+    padding: 10px;
+}
+
+.video-container {
+    position: relative;
+    width: 640px;
+    height: 450px;
+}
+
+#webcamVideo {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+    background-color: rgba(128, 128, 128, 0.5); /* semi-transparent grey */
+    color: white;
+    text-align: center;
 }

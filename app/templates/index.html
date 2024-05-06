@@ -6,19 +6,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Webcam Video Stream</title>
+    <title>TheCoolVision - Home</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.colors.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}" />
 </head>
 
 <body>
-    <h1>Webcam Video Stream</h1>
-
     <div class="container">
-        <video id="webcamVideo" width="640" height="480" autoplay></video>
+        <div class="video-container">
+            <video id="webcamVideo" width="640" height="450" autoplay></video>
+            <button class="overlay">Take a photo 📸</button>
+        </div>
 
-        <div class="button-column">
+        <div class="button-column mhd-button">
             <button>3 Tage</button>
             <button>1 Woche</button>
             <button>1 Monat</button>
@@ -35,51 +36,13 @@
     </div>
 
     <div class="button-row">
-        <button class="pico-background-green-300">Hinzufügen</button>
-        <button class="pico-background-orange-350">Abbrechen</button>
+        <button class="pico-background-orange-350 big-button-action">Abbrechen</button>
+        <button class="pico-background-green-300 big-button-action">Hinzufügen</button>
+        <button class="pico-background-orange-100 big-button-action">Rausnehmen</button>
+
     </div>
 
-    <script>
-        const videoElement = document.getElementById('webcamVideo');
-
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (stream) {
-                videoElement.srcObject = stream;
-
-                // Send the stream to the Flask server
-                if (!MediaRecorder.isTypeSupported('video/webm')) {
-                    console.log('WebM video format is not supported');
-                }
-                let options = { mimeType: 'video/webm' };
-                const mediaRecorder = new MediaRecorder(stream, options);
-                mediaRecorder.ondataavailable = function (event) {
-
-                    if (event.data.size > 0) {
-                        const formData = new FormData();
-                        formData.append('video', event.data, 'webcam_stream.webm');
-
-                        fetch('/process_video', {
-                            method: 'POST',
-                            body: formData
-                        })
-                            .then(response => {
-                                if (response.ok) {
-                                    console.log('Video data sent successfully');
-                                } else {
-                                    console.error('Failed to send video data');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error sending video data:', error);
-                            });
-                    }
-                };
-
-                mediaRecorder.start(10000); // Send data every 1 second
-            })
-            .catch(function (error) {
-                console.error('Error accessing webcam:', error);
-            });
+    <script src="{{ url_for('static', filename='js/send_video.js') }}">
     </script>
 </body>
 
