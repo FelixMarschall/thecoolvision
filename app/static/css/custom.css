@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    align-items: start;
+    justify-content: space-between;
+}
+
+.button-column {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.button-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    /* This will put some space between the buttons */
+    gap: 10px;
+}
