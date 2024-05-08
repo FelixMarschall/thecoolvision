@@ -34,7 +34,7 @@ def process_video():
         global i
         i = i + 1
         # video_path = str(i) + 'webcam_stream.webm'
-        video_path = 'webcam_stream.webm'
+        video_path = 'app/temp/webcam_stream.webm'
         
 
         video_file.save(video_path)
@@ -56,7 +56,7 @@ def process_video():
         ret, frame = cap.read()
 
         if ret:
-            cv2.imwrite(str(i) + 'webcam_frame.jpg', frame)
+            cv2.imwrite('app/temp/' + str(i) + 'webcam_frame.jpg', frame)
             cap.release()
 
         log.info('Video data processed successfully')
