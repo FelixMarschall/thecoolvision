@@ -1,2 +1,4 @@
 Flask==3.0.3
+opencv_python==4.9.0.80
 pygrocy==2.1.0
+python_magic==0.4.27
