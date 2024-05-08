@@ -18,21 +18,3 @@ docker run -p 5000:5000 coolvision-app
 ```
 
 4. open http://172.21.80.246:5000
-
-### Auth
-
-raspberry pi
-
-```
-IP: 172.21.80.246
-user: pi
-pw: raspberry
-```
-
-Portainer: https://172.21.80.246:9443
-
-```
-user: admin
-pw: raspberry123
-```
-
