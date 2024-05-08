@@ -1,5 +1,3 @@
-# app.py
-
 from flask import Flask, render_template, request
 import cv2
 import logging
