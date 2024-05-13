@@ -16,6 +16,14 @@ app = Flask(__name__)
 def index():
     return render_template('index.html')
 
+@app.route('/add_product', methods=['POST'])
+def add_product():
+ pass
+
+@app.route('/remove_product', methods=['POST'])
+def remove_product():
+ pass
+
 i = 0
 @app.route('/process_video', methods=['POST'])
 def process_video():
