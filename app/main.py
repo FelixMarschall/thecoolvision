@@ -6,11 +6,14 @@ import logging
 import os
 import time
 import magic
+from pygrocy import Grocy
 
 logging.basicConfig(level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
 app = Flask(__name__)
+
+grocy = Grocy("http://172.21.80.245", "eUij63wXq4Ct5wWKIO1NDBfC5XX4Ofq55xtLPFA29w8OPgL4KB", port=80)
 
 @app.route('/')
 def index():
@@ -18,11 +21,22 @@ def index():
 
 @app.route('/add_product', methods=['POST'])
 def add_product():
- pass
+    product_id = request.form.get('product_id')
+    amount = 1
+    price = 1
+    best_before_date = request.form.get('best_before_date')
+
+    #add product to db
+    Grocy.add_product(grocy, product_id, amount, price, best_before_date)
 
 @app.route('/remove_product', methods=['POST'])
 def remove_product():
- pass
+    product_id = request.form.get('product_id')
+    amount = 1
+    spoiled = False
+
+    #remove product from db
+    Grocy.consume_product(grocy, product_id, amount, spoiled)
 
 i = 0
 @app.route('/process_video', methods=['POST'])
