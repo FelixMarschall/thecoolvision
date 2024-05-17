@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request
-import cv2
+# import cv2
 import logging
 import os
-import time
-import magic
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -58,12 +56,12 @@ def process_video():
         #     return 'Invalid file format', 400
 
         # Open the video file
-        cap = cv2.VideoCapture(video_path)
-        ret, frame = cap.read()
+        # cap = cv2.VideoCapture(video_path)
+        # ret, frame = cap.read()
 
-        if ret:
-            cv2.imwrite('app/temp/' + str(i) + 'webcam_frame.jpg', frame)
-            cap.release()
+        # if ret:
+        #     cv2.imwrite('app/temp/' + str(i) + 'webcam_frame.jpg', frame)
+        #     cap.release()
 
         log.info('Video data processed successfully')
         return 'Video data processed successfully', 200
