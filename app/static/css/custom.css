@@ -1,3 +1,26 @@
+.btn-mhd {
+    padding: 10px 20px;
+    margin: 5px;
+    border: 1px solid rgb(44,44,44);
+    background-color: rgb(64,64,64);
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .btn-pers {
+    padding: 10px 20px;
+    margin: 5px;
+    border: 1px solid rgb(44,44,44);
+    background-color: rgb(64,64,64);
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .selected {
+    background-color: rgb(0, 150, 130);
+    color: rgb(255, 255, 255);
+  }
+
 .container {
     display: flex;
     align-items: start;

@@ -20,19 +20,21 @@
         </div>
 
         <div class="button-column mhd-button">
-            <button>3 Tage</button>
-            <button>1 Woche</button>
-            <button>1 Monat</button>
+            <div class="button-column mhd-button">
+                <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
+                <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
+                <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
+            </div>
         </div>
     </div>
 
     <div class="button-grid">
-        <button>Name 1</button>
-        <button>Name 2</button>
-        <button>Name 3</button>
-        <button>Name 4</button>
-        <button>Name 5</button>
-        <button>Name 6</button>
+        <button class="btn-pers" id="pers1" onclick="selectButton(this.id)">Name 1</button>
+        <button class="btn-pers" id="pers2" onclick="selectButton(this.id)">Name 2</button>
+        <button class="btn-pers" id="pers3" onclick="selectButton(this.id)">Name 3</button>
+        <button class="btn-pers" id="pers4" onclick="selectButton(this.id)">Name 4</button>
+        <button class="btn-pers" id="pers5" onclick="selectButton(this.id)">Name 5</button>
+        <button class="btn-pers" id="pers6" onclick="selectButton(this.id)">Name 6</button>
     </div>
 
     <div class="button-row">
@@ -42,6 +44,29 @@
 
     </div>
 
+    <script>
+        function selectButton(selectedId) {
+            // Check if the button is already selected
+            var button = document.getElementById(selectedId);
+            var isSelected = button.classList.contains('selected');
+            var buttonClass = button.classList[0];
+            
+    
+            // Deselect all buttons if the button is already selected
+            if (isSelected) {
+                button.classList.remove('selected');
+            } else {
+                // Deselect all buttons
+                document.querySelectorAll('.' + buttonClass).forEach(button => {
+                    button.classList.remove('selected');
+                });
+    
+                // Select the clicked button
+                button.classList.add('selected');
+            }
+        }
+    </script>
+    
     <script src="{{ url_for('static', filename='js/send_video.js') }}">
     </script>
 </body>
