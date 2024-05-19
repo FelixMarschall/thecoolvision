@@ -14,21 +14,20 @@
 
 <body>
     <div class="container">
-        <div class="video-container">
-            <video id="webcamVideo" width="640" height="450" autoplay></video>
-            <button class="overlay">Take a photo 📸</button>
+        <div class="video-container" width="640" height="450" onclick="takePhoto()">
+            <video class="video-feed" id="webcamVideo" autoplay></video>
+            <div class="countdown-overlay"></div>
+            <button class="overlay photo-button-overlay">Take a photo 📸</button>
         </div>
 
-        <div class="button-column mhd-button">
-            <div class="button-column mhd-button">
-                <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
-                <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
-                <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
-            </div>
+        <div class="button-column mhd-buttons">
+            <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
+            <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
+            <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
         </div>
     </div>
 
-    <div class="button-grid">
+    <div class="button-grid names-grid">
         <button class="btn-pers" id="pers1" onclick="selectButton(this.id)">Name 1</button>
         <button class="btn-pers" id="pers2" onclick="selectButton(this.id)">Name 2</button>
         <button class="btn-pers" id="pers3" onclick="selectButton(this.id)">Name 3</button>
@@ -37,11 +36,10 @@
         <button class="btn-pers" id="pers6" onclick="selectButton(this.id)">Name 6</button>
     </div>
 
-    <div class="button-row">
-        <button class="pico-background-orange-350 big-button-action">Abbrechen</button>
-        <button class="pico-background-green-300 big-button-action">Hinzufügen</button>
-        <button class="pico-background-orange-100 big-button-action">Rausnehmen</button>
-
+    <div class="button-row general-controls">
+        <button class="pico-background-orange-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
+        <button class="pico-background-green-300 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
+        <button class="pico-background-orange-100 big-button-action" onclick="rausnehmen()">Rausnehmen</button>
     </div>
 
     <script>
@@ -65,10 +63,42 @@
                 button.classList.add('selected');
             }
         }
-    </script>
-    
-    <script src="{{ url_for('static', filename='js/send_video.js') }}">
-    </script>
-</body>
 
-</html>
+        function rausnehmen() {
+            var selectedButtons = document.querySelectorAll('.selected');
+            console.log(selectedButtons);
+
+                }
+
+        function hinzufuegen() {
+
+        }
+
+        function abbrechen() {
+            document.querySelectorAll('.selected').forEach(button => {
+                button.classList.remove('selected');
+            });
+        }
+
+            function takePhoto() {
+                var overlay = document.querySelector(".countdown-overlay");
+                var countdown = 3;
+                var countdownInterval = setInterval(function() {
+                    if (countdown === 0) {
+                        console.log("Take the photo!");
+                        overlay.innerText = "";
+                        clearInterval(countdownInterval);
+                    } else {
+                        overlay.innerText = countdown;
+                        countdown--;
+                    }
+                }, 700);
+            }
+        </script>
+
+        </script>
+        
+        <script src="{{ url_for('static', filename='js/send_video.js') }}"></script>
+    </body>
+
+    </html>
