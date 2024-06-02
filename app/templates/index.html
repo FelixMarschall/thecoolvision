@@ -16,7 +16,7 @@
     <div class="container">
         <div class="video-container">
             <video id="webcamVideo" width="640" height="450" autoplay></video>
-            <button class="overlay">Take a photo 📸</button>
+            <button id="take-photo-button" class="overlay">Take a photo 📸</button>
         </div>
 
         <div class="button-column mhd-button">
@@ -39,11 +39,10 @@
         <button class="pico-background-orange-350 big-button-action">Abbrechen</button>
         <button class="pico-background-green-300 big-button-action">Hinzufügen</button>
         <button class="pico-background-orange-100 big-button-action">Rausnehmen</button>
-
     </div>
 
-    <script src="{{ url_for('static', filename='js/send_video.js') }}">
-    </script>
+    <!-- <script src="{{ url_for('static', filename='js/send_video.js') }}"></script> -->
+    <script src="{{ url_for('static', filename='js/take_photo.js') }}"></script>
 </body>
 
 </html>
