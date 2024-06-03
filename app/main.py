@@ -16,9 +16,9 @@ def index():
 def add_product():
  pass
 
-@app.route('/remove_product', methods=['POST'])
+@app.route('/remove_product')
 def remove_product():
- pass
+    return render_template('remove_item.html')
 
 i = 0
 @app.route('/process_video', methods=['POST'])

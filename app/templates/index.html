@@ -13,6 +13,7 @@
 </head>
 
 <body>
+
     <div class="container">
         <div class="video-container" width="640" height="450" onclick="takePhoto()">
             <video class="video-feed" id="webcamVideo" autoplay></video>
@@ -21,10 +22,16 @@
         </div>
 
         <div class="button-column mhd-buttons">
+            <div class="toggle-switch">
+                <input type="checkbox" id="toggle" class="toggle-input">
+                <label for="toggle" class="toggle-label"></label>
+            </div>
+
             <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
             <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
             <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
         </div>
+        
     </div>
 
     <div class="button-grid names-grid">
@@ -39,8 +46,10 @@
     <div class="button-row general-controls">
         <button class="pico-background-orange-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
         <button class="pico-background-green-300 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
-        <button class="pico-background-orange-100 big-button-action" onclick="rausnehmen()">Rausnehmen</button>
+        <button class="pico-background-orange-100 big-button-action" onclick="window.location.href='/remove_product'">Rausnehmen</button>
     </div>
+
+    
 
     <script>
         function selectButton(selectedId) {
@@ -63,12 +72,6 @@
                 button.classList.add('selected');
             }
         }
-
-        function rausnehmen() {
-            var selectedButtons = document.querySelectorAll('.selected');
-            console.log(selectedButtons);
-
-                }
 
         function hinzufuegen() {
 
@@ -94,8 +97,6 @@
                     }
                 }, 700);
             }
-        </script>
-
         </script>
         
         <script src="{{ url_for('static', filename='js/send_video.js') }}"></script>
