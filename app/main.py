@@ -4,7 +4,7 @@ from flask import Flask, render_template, request
 import logging
 import requests
 
-from app.grocy_api import GrocyAPI
+from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
