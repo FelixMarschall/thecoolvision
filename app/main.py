@@ -7,13 +7,14 @@ import os
 import time
 import magic
 from pygrocy import Grocy
+from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
 log = logging.getLogger(__name__)
 app = Flask(__name__)
 
-grocy = Grocy("http://172.21.80.245", "eUij63wXq4Ct5wWKIO1NDBfC5XX4Ofq55xtLPFA29w8OPgL4KB", port=80)
+api = GrocyAPI('https://grocy.softghost.dev/api', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
 
 @app.route('/')
 def index():
@@ -27,16 +28,27 @@ def add_product():
     best_before_date = request.form.get('best_before_date')
 
     #add product to db
-    Grocy.add_product(grocy, product_id, amount, price, best_before_date)
+    grocy.add_product(grocy, product_id, amount, price, best_before_date)
 
-@app.route('/remove_product', methods=['POST'])
-def remove_product():
+    #list_products needs product.user_id, so somehow we need to add a user_id to the product
+
+@app.route('/remove_product/<product_id>', methods=['POST'])
+def remove_product(product_id):
     product_id = request.form.get('product_id')
     amount = 1
     spoiled = False
 
     #remove product from db
-    Grocy.consume_product(grocy, product_id, amount, spoiled)
+    grocy.consume_product(grocy, product_id, amount, spoiled)
+
+@app.route('/list_products/<user_id>', methods=['GET'])
+def list_products(user_id):
+    products = grocy.stock()
+
+    #get products for matching user ids
+    user_products = [product for product in products if product.user_id == user_id]
+    #this needs to be programmed in javascript, so that the user_id is passed to the server
+    return jsonify([product.__dict__ for product in user_products])
 
 i = 0
 @app.route('/process_video', methods=['POST'])
