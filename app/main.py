@@ -30,11 +30,33 @@ def get_stock():
 
 @app.route("/add_product", methods=["POST"])
 def add_product():
-    pass    
+    product_id = request.form.get('product_id')
+    amount = 1
+    price = 1
+    best_before_date = request.form.get('best_before_date')
 
-@app.route('/remove_product')
-def remove_product():
-    return render_template('remove_item.html')
+    #add product to db
+    grocy.add_product(grocy, product_id, amount, price, best_before_date)
+
+    #list_products needs product.user_id, so somehow we need to add a user_id to the product
+
+@app.route('/remove_product/<product_id>', methods=['POST'])
+def remove_product(product_id):
+    product_id = request.form.get('product_id')
+    amount = 1
+    spoiled = False
+
+    #remove product from db
+    grocy.consume_product(grocy, product_id, amount, spoiled)
+
+@app.route('/list_products/<user_id>', methods=['GET'])
+def list_products(user_id):
+    products = grocy.stock()
+
+    #get products for matching user ids
+    user_products = [product for product in products if product.user_id == user_id]
+    #this needs to be programmed in javascript, so that the user_id is passed to the server
+    return jsonify([product.__dict__ for product in user_products])
 
 
 @app.route("/process_image", methods=["POST"])
