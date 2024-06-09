@@ -17,7 +17,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    names = ["Fabian", "Aaron", "Felix", "Moritz", "Damian", "Martin"]
+    return render_template("index.html", names=names)
 
 
 @app.route("/stock", methods=["GET"])
@@ -30,11 +31,12 @@ def get_stock():
 
 @app.route("/add_product", methods=["POST"])
 def add_product():
-    pass    
+    pass
 
-@app.route('/remove_product')
-def remove_product():
-    return render_template('remove_item.html')
+@app.route('/remove_product/<name>')
+def remove_product(name):
+    products = [('Tomato', '01.01.2099'), ('Apple', '24.11.2099'), ('Peach-Icetea', '01.01.2222')]
+    return render_template('remove_item.html', name=name, products=products)
 
 
 @app.route("/process_image", methods=["POST"])

@@ -1,7 +1,7 @@
 <!-- templates/index.html -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -13,42 +13,71 @@
 </head>
 
 <body>
+    <div class="container-fluid">
 
-    <div class="container">
-        <div class="video-container" width="640" height="450" onclick="takePhoto()">
-            <video class="video-feed" id="webcamVideo" autoplay></video>
-            <div class="countdown-overlay"></div>
-            <button class="overlay photo-button-overlay">Take a photo 📸</button>
-        </div>
-
-        <div class="button-column mhd-buttons">
-            <div class="toggle-switch">
-                <input type="checkbox" id="toggle" class="toggle-input">
-                <label for="toggle" class="toggle-label"></label>
+        <div class="grid">
+            <div class="container video-container" onclick="takePhoto()">
+                <video class="video-feed" id="webcamVideo" autoplay></video>
+                <div class="countdown-overlay"></div>
+                <button class="overlay photo-button-overlay">Take a photo 📸</button>
             </div>
 
-            <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
-            <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
-            <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
+            <div class="button-column mhd-buttons">
+
+                <div class="container">
+                    <button class="change-mhd decrease-mhd" id="decrease-days-button" onclick="decrease('days-button')">-</button>
+                    <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
+                    <button class="change-mhd increase-mhd" id="increase-days-button" onclick="increase('days-button')">+</button>
+                </div>
+                <div class="container">
+                    <button class="change-mhd decrease-mhd" id="decrease-days-button" onclick="decrease('weeks-button')">-</button>
+                    <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
+                    <button class="change-mhd increase-mhd" id="increase-days-button" onclick="increase('weeks-button')">+</button>
+                </div>
+                <div class="container">
+                    <button class="change-mhd decrease-mhd" id="decrease-days-button" onclick="decrease('months-button')">-</button>
+                    <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
+                    <button class="change-mhd increase-mhd" id="increase-days-button" onclick="increase('months-button')">+</button>
+                </div>
+            </div>
+            
         </div>
-        
+
+        <div class="button-grid names-grid">
+            {% for name in names %}
+                <button class="btn-pers" id="{{ name }}" onclick="selectButton(this.id)">{{ name }}</button>
+            {% endfor %}
+        </div>
+
+        <div class="button-row general-controls">
+            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
+            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
+            <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/remove_product/' + document.querySelector('.btn-pers.selected').id }">Rausnehmen</button>
+        </div>
     </div>
 
-    <div class="button-grid names-grid">
-        <button class="btn-pers" id="pers1" onclick="selectButton(this.id)">Name 1</button>
-        <button class="btn-pers" id="pers2" onclick="selectButton(this.id)">Name 2</button>
-        <button class="btn-pers" id="pers3" onclick="selectButton(this.id)">Name 3</button>
-        <button class="btn-pers" id="pers4" onclick="selectButton(this.id)">Name 4</button>
-        <button class="btn-pers" id="pers5" onclick="selectButton(this.id)">Name 5</button>
-        <button class="btn-pers" id="pers6" onclick="selectButton(this.id)">Name 6</button>
-    </div>
+    <footer>
+        <nav class="navbar-bottom">
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">About</a></li>
 
-    <div class="button-row general-controls">
-        <button class="pico-background-orange-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
-        <button class="pico-background-green-300 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
-        <button class="pico-background-orange-100 big-button-action" onclick="window.location.href='/remove_product'">Rausnehmen</button>
-    </div>
+            </ul>
 
+            <div class="right">
+                <fieldset>
+                
+                    <label>
+                        ☼&nbsp;&nbsp;
+                        <input name="opt-in" id="theme-toggle" type="checkbox" role="switch" checked/>
+                        🌙
+                    </label>
+                
+                </fieldset>
+            </div>
+
+        </nav>
+    </footer>
     
 
     <script>
@@ -74,7 +103,20 @@
         }
 
         function hinzufuegen() {
+            var selectedButtons = document.querySelectorAll('.selected');
+            var selectedButtonsText = [];
+            var amount, unit, person;
 
+            selectedButtons.forEach(button => {
+                if (button.classList.contains('btn-mhd')) {
+                    unit = getUnitSelectedButton(button.id);
+                    amount = getAmountSelectedButton(button.id);
+                } else if (button.classList.contains('btn-pers')) {
+                    person = button.innerText;
+                }
+            });
+
+            console.log(amount, unit, person);
         }
 
         function abbrechen() {
@@ -83,20 +125,110 @@
             });
         }
 
-            function takePhoto() {
-                var overlay = document.querySelector(".countdown-overlay");
-                var countdown = 3;
-                var countdownInterval = setInterval(function() {
-                    if (countdown === 0) {
-                        console.log("Take the photo!");
-                        overlay.innerText = "";
-                        clearInterval(countdownInterval);
-                    } else {
-                        overlay.innerText = countdown;
-                        countdown--;
-                    }
-                }, 700);
+        // Function to increase the amount
+        function increase(buttonId) {
+            const button = document.getElementById(buttonId);
+            if (! button.classList.contains('selected')) {
+                selectButton(buttonId);
             }
+            const buttonTexts = button.innerText.split(' ')
+            let amount = parseInt(buttonTexts[0]);
+            amount++;
+            button.innerText = `${amount} ${buttonTexts[1]}`;
+            checkGrammer(buttonId);
+        }
+
+        // Function to decrease the amount
+        function decrease(buttonId) {
+            const button = document.getElementById(buttonId);
+            if (! button.classList.contains('selected')) {
+                selectButton(buttonId);
+            }
+            const buttonTexts = button.innerText.split(' ')
+            let amount = parseInt(buttonTexts[0]);
+            if (amount > 1) {  // Ensure amount do not go below 1
+                amount--;
+            }
+            button.innerText = `${amount} ${buttonTexts[1]}`;
+            checkGrammer(buttonId);
+        }
+
+        function checkGrammer(buttonID){
+            var button = document.getElementById(buttonID);
+            var buttonText = button.innerText;
+            var buttonTexts = buttonText.split(' ');
+            var amount = parseInt(buttonTexts[0]);
+            var unit = buttonTexts[1];
+            if (amount > 1) {
+                if (unit.includes("Tag")) {
+                    unit = "Tage";
+                } else if (unit.includes("Woche")) {
+                    unit = "Wochen";
+                } else if (unit.includes("Monat")) {
+                    unit = "Monate";
+                }
+                button.innerText = `${amount} ${unit}`;
+            } else {
+                if (unit.includes("Tage")) {
+                    unit = "Tag";
+                } else if (unit.includes("Wochen")) {
+                    unit = "Woche";
+                } else if (unit.includes("Monate")) {
+                    unit = "Monat";
+                }
+                button.innerText = `${amount} ${unit}`;
+            }
+        }
+
+        function getAmountSelectedButton(buttonId) {
+            const button = document.getElementById(buttonId);
+            const buttonTexts = button.innerText.split(' ')
+            return parseInt(buttonTexts[0]);
+        }
+
+        function getUnitSelectedButton(buttonId) {
+            const button = document.getElementById(buttonId);
+            const buttonTexts = button.innerText.split(' ')
+            return buttonTexts[1];
+        }
+
+        function takePhoto() {
+            var overlay = document.querySelector(".countdown-overlay");
+            var countdown = 3;
+            var countdownInterval = setInterval(function() {
+                if (countdown === 0) {
+                    console.log("Take the photo!");
+                    overlay.innerText = "";
+                    clearInterval(countdownInterval);
+                } else {
+                    overlay.innerText = countdown;
+                    countdown--;
+                }
+            }, 700);
+        }
+
+
+        // Get the current theme from local storage or default to 'light'
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', currentTheme);
+
+        // Set the initial state of the toggle switch
+        const toggleSwitch = document.getElementById('theme-toggle');
+        if (currentTheme === 'dark') {
+            toggleSwitch.checked = true;
+        }
+
+        // Add an event listener to the toggle switch
+        toggleSwitch.addEventListener('change', function() {
+            if (toggleSwitch.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+        
         </script>
         
         <script src="{{ url_for('static', filename='js/send_video.js') }}"></script>

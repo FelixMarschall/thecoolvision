@@ -1,29 +1,52 @@
 .btn-mhd {
-padding: 10px 20px;
-margin: 5px;
-border: 1px solid rgb(44,44,44);
-background-color: rgb(64,64,64);
-cursor: pointer;
-transition: background-color 0.3s;
-
+    margin-top: 2%;
+    padding: 10px;
+    width: 70%;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .mhd-buttons {
-padding-top: 10%;
+    padding-top: 10%;
+}
+
+.remove-title{
+    margin-top: 2%;
+    padding: 10px;
+    border: none;
+    text-align: center;
+}
+.navbar-bottom{
+    padding-right: 2%;
+    padding-left: 2%;
+}
+
+.change-mhd {
+    margin-top: 2%;
+    padding: 10px;
+    width: 10%;
+    align-self: centers;
+    border: none;
+}
+
+.increase-mhd {
+    background-color: rgb(70, 160, 90);
+}
+
+.decrease-mhd {
+    background-color: rgb(160, 88, 70);
 }
 
 .btn-pers {
-padding: 10px 20px;
-margin: 5px;
-border: 1px solid rgb(44,44,44);
-background-color: rgb(64,64,64);
-cursor: pointer;
-transition: background-color 0.3s;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 .selected {
-background-color: rgb(0, 150, 130);
-color: rgb(255, 255, 255);
+    background-color: rgb(0, 150, 130);
+    color: rgb(255, 255, 255);
 }
 
 .container {
