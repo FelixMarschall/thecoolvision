@@ -1,7 +1,7 @@
 <!-- templates/index.html -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -31,7 +31,7 @@
             <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
             <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
         </div>
-        
+
     </div>
 
     <div class="button-grid names-grid">
@@ -46,60 +46,15 @@
     <div class="button-row general-controls">
         <button class="pico-background-orange-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
         <button class="pico-background-green-300 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
-        <button class="pico-background-orange-100 big-button-action" onclick="window.location.href='/remove_product'">Rausnehmen</button>
+        <button class="pico-background-orange-100 big-button-action"
+            onclick="window.location.href='/remove_product'">Rausnehmen</button>
     </div>
 
-    
 
-    <script>
-        function selectButton(selectedId) {
-            // Check if the button is already selected
-            var button = document.getElementById(selectedId);
-            var isSelected = button.classList.contains('selected');
-            var buttonClass = button.classList[0];
-            
-    
-            // Deselect all buttons if the button is already selected
-            if (isSelected) {
-                button.classList.remove('selected');
-            } else {
-                // Deselect all buttons
-                document.querySelectorAll('.' + buttonClass).forEach(button => {
-                    button.classList.remove('selected');
-                });
-    
-                // Select the clicked button
-                button.classList.add('selected');
-            }
-        }
 
-        function hinzufuegen() {
+    <script src="{{ url_for('static', filename='js/button_functions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/take_photo.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/switch_theme.js') }}"></script>
+</body>
 
-        }
-
-        function abbrechen() {
-            document.querySelectorAll('.selected').forEach(button => {
-                button.classList.remove('selected');
-            });
-        }
-
-            function takePhoto() {
-                var overlay = document.querySelector(".countdown-overlay");
-                var countdown = 3;
-                var countdownInterval = setInterval(function() {
-                    if (countdown === 0) {
-                        console.log("Take the photo!");
-                        overlay.innerText = "";
-                        clearInterval(countdownInterval);
-                    } else {
-                        overlay.innerText = countdown;
-                        countdown--;
-                    }
-                }, 700);
-            }
-        </script>
-        
-        <script src="{{ url_for('static', filename='js/take_photo.js') }}"></script>
-    </body>
-
-    </html>
+</html>
