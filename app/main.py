@@ -17,7 +17,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    names = ["Fabian", "Aaron", "Felix", "Moritz", "Damian", "Martin"]
+    return render_template("index.html", names=names)
 
 
 @app.route("/stock", methods=["GET"])
