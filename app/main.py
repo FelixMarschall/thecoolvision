@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    names = ["Fabian", "Aaron", "Felix", "Moritz", "Demian", "Martin"]
+    names = [(0, "Fabian"), (1, "Aaron"), (2, "Felix"), (3, "Moritz"), (4, "Demian"), (5, "Martin")]
     return render_template("index.html", names=names)
 
 
@@ -57,7 +57,7 @@ def list_products(user_id):
     #get products for matching user ids
     user_products = [product for product in products if product.user_id == user_id]
     #this needs to be programmed in javascript, so that the user_id is passed to the server
-    return jsonify([product.__dict__ for product in user_products])
+    return render_template("index.html", products=jsonify([product.__dict__ for product in user_products]))
 
 
 @app.route("/process_image", methods=["POST"])

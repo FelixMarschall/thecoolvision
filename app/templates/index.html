@@ -45,15 +45,15 @@
         </div>
 
         <div class="button-grid names-grid">
-            {% for name in names %}
-                <button class="btn-pers" id="{{ name }}" onclick="selectButton(this.id)">{{ name }}</button>
+            {% for (id, name) in names %}
+                <button class="btn-pers" id="{{ id }}" onclick="selectButton(this.id)">{{ name }}</button>
             {% endfor %}
         </div>
 
         <div class="button-row general-controls">
             <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
             <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
-            <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/remove_product/' + document.querySelector('.btn-pers.selected').id }">Rausnehmen</button>
+            <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/list_products/' + document.querySelector('.btn-pers.selected').id }">Rausnehmen</button>
         </div>
     </div>
 
