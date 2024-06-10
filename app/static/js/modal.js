@@ -37,11 +37,11 @@ const toggleModalWithData = (event, item_id) => {
         .then((response) => response.json())
         .then((data) => {
             // insert values into form with id form_update
-            const form = document.getElementById("update-item");
-            form.querySelector("#id").value = data.id;
-            form.querySelector("#name").value = data.name;
-            form.querySelector("#description").value = data.description;
-            form.querySelector("#price").value = data.price;
+            // const form = document.getElementById("update-item");
+            // form.querySelector("#id").value = data.id;
+            // form.querySelector("#name").value = data.name;
+            // form.querySelector("#description").value = data.description;
+            // form.querySelector("#price").value = data.price;
         }).catch((error) => console.error('Error:', error));
 
     toggleModal(event);
@@ -68,7 +68,7 @@ const openModal = (modal) => {
 // Close modal
 const closeModal = (modal) => {
     visibleModal = null;
-    form_update.reset();
+    // form_update.reset();
     const {documentElement: html} = document;
     html.classList.add(closingClass);
     setTimeout(() => {
