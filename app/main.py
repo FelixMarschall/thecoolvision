@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    names = ["Fabian", "Aaron", "Felix", "Moritz", "Damian", "Martin"]
+    names = ["Fabian", "Aaron", "Felix", "Moritz", "Demian", "Martin"]
     return render_template("index.html", names=names)
 
 

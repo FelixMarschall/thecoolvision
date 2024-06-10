@@ -1,18 +1,20 @@
- // Select the element
- var element = document.querySelector('[data-theme]');
+// Get the current theme from local storage or default to 'light'
+const currentTheme = localStorage.getItem('theme') || 'light';
+document.documentElement.setAttribute('data-theme', currentTheme);
 
- // Select the toggle switch
- var toggle = document.querySelector('#toggle');
+// Set the initial state of the toggle switch
+const toggleSwitch = document.getElementById('theme-toggle');
+if (currentTheme === 'dark') {
+    toggleSwitch.checked = true;
+}
 
- // Add event listener
- toggle.addEventListener('change', function () {
-     // Check current theme
-     var currentTheme = element.getAttribute('data-theme');
-
-     // Switch theme
-     if (currentTheme === 'light') {
-         element.setAttribute('data-theme', 'dark');
-     } else {
-         element.setAttribute('data-theme', 'light');
-     }
- });
+// Add an event listener to the toggle switch
+toggleSwitch.addEventListener('change', function() {
+    if (toggleSwitch.checked) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
+    }
+});
