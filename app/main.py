@@ -17,8 +17,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    names = [(0, "Fabian"), (1, "Aaron"), (2, "Felix"), (3, "Moritz"), (4, "Demian"), (5, "Martin")]
-    return render_template("index.html", names=names)
+    users = api.get("users")
+
+    # filter out user with display_name "admin"
+    users = [user for user in users if user["display_name"] != "admin"]
+
+    return render_template("index.html", users=users)
 
 
 @app.route("/stock", methods=["GET"])

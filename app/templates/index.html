@@ -45,8 +45,8 @@
         </div>
 
         <div class="button-grid names-grid">
-            {% for (id, name) in names %}
-                <button class="btn-pers" id="{{ id }}" onclick="selectButton(this.id)">{{ name }}</button>
+            {% for user in users %}
+                <button class="btn-pers" id="{{ user.id }}" onclick="selectButton(this.id)">{{ user.display_name }}</button>
             {% endfor %}
         </div>
 
