@@ -8,7 +8,7 @@ from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
-api = GrocyAPI('https://grocy.softghost.dev/api', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
+api = GrocyAPI('https://grocy.softghost.dev/api/', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
 
 
 log = logging.getLogger(__name__)
@@ -68,6 +68,14 @@ def process_image():
     file = request.files["image"]
     file.save("app/temp/image.jpg")
     return "Image data processed successfully", 200
+
+@app.route("/users", methods=["GET"])
+def get_users():
+    users = api.get("users")
+    print(users)
+    if not users:
+        return "No users available", 404
+    return users, 200
 
 
 if __name__ == "__main__":
