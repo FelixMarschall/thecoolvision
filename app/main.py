@@ -8,7 +8,7 @@ from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
-api = GrocyAPI('https://grocy.softghost.dev/api', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
+api = GrocyAPI('https://grocy.softghost.dev/api/', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
 
 
 log = logging.getLogger(__name__)
@@ -17,8 +17,12 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    names = ["Fabian", "Aaron", "Felix", "Moritz", "Demian", "Martin"]
-    return render_template("index.html", names=names)
+    users = api.get("users")
+
+    # filter out user with display_name "admin"
+    users = [user for user in users if user["display_name"] != "admin"]
+
+    return render_template("index.html", users=users)
 
 
 @app.route("/stock", methods=["GET"])
@@ -57,7 +61,7 @@ def list_products(user_id):
     #get products for matching user ids
     user_products = [product for product in products if product.user_id == user_id]
     #this needs to be programmed in javascript, so that the user_id is passed to the server
-    return jsonify([product.__dict__ for product in user_products])
+    return render_template("index.html", products=jsonify([product.__dict__ for product in user_products]))
 
 
 @app.route("/process_image", methods=["POST"])
@@ -68,6 +72,14 @@ def process_image():
     file = request.files["image"]
     file.save("app/temp/image.jpg")
     return "Image data processed successfully", 200
+
+@app.route("/users", methods=["GET"])
+def get_users():
+    users = api.get("users")
+    print(users)
+    if not users:
+        return "No users available", 404
+    return users, 200
 
 
 if __name__ == "__main__":
