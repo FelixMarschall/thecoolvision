@@ -45,7 +45,7 @@ function abbrechen() {
 function entfernen(event) {
     // get the button id of the selected button
     var selectedButtons = document.querySelectorAll('.selected');
-    var personId;
+    var personId, personDisplayName;
 
     // is selectedButtons empty?
     if (selectedButtons.length == 0) {
@@ -59,9 +59,26 @@ function entfernen(event) {
     selectedButtons.forEach(button => {
         if (button.classList.contains('btn-pers')) {
             personId = button.id;
-            console.log("Trigger Entfernen with PersonId " + personId);
+            personDisplayName = button.innerText;
+            console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
         }
     });
+
+    // make request to get item by id
+    // fetch(`/person/${personId}`, {
+    //     method: 'GET',
+    //     headers: {
+    //         [header]: token,
+    //     }
+    // })
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //         // insert values into form with id form_update
+    //         const form = document.getElementById("delete-person");
+    //         form.querySelector("#id").value = data.id;
+    //         form.querySelector("#name").value = data.name;
+    //         form.querySelector("#description").value = data.description;
+    //     }).catch((error) => console.error('Error:', error));
 }
 
 // Function to increase the amount
