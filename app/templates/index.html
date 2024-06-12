@@ -2,7 +2,6 @@
 
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-<html lang="en" data-theme="dark">
 
 <head>
     <meta charset="UTF-8">
@@ -11,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.colors.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/feather.min.js') }}"></script>
 </head>
 
 <body>
@@ -51,42 +51,89 @@
         </div>
 
         <div class="button-row general-controls">
-            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
-            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
-            <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/list_products/' + document.querySelector('.btn-pers.selected').id }">Rausnehmen</button>
+            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen <i data-feather="x-square"></i></button>
+            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen <i data-feather="file-plus"></i></button>
+            <!-- <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/list_products/' + document.querySelector('.btn-pers.selected').id }">Entfernen <i data-feather="trash-2"></i></button> -->
+            <button class="pico-background-amber-250 big-button-action" data-target="modal-remove-item" onclick="entfernen(event)">Entfernen <i data-feather="trash-2"></i></button>
         </div>
     </div>
 
     <footer>
-        <nav class="navbar-bottom">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-
-            </ul>
-
-            <div class="right">
+        <div class="grid-container">
+            <div class="darkmode">
                 <fieldset>
-                
                     <label>
                         ☼&nbsp;&nbsp;
                         <input name="opt-in" id="theme-toggle" type="checkbox" role="switch" checked/>
                         🌙
                     </label>
-                
                 </fieldset>
             </div>
+            <nav class="navbar-bottom">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+            <div class="right">
+                
 
-        </nav>
+            </div>
+        </div>
+        
+        
     </footer>
-
+    <!-- Modal remove item -->
+    <dialog id="modal-remove-item">
+        <article>
+            <header>
+                <a
+                        href="#close"
+                        aria-label="Close"
+                        rel="prev"
+                        data-target="modal-remove-item"
+                        onclick="toggleModal(event)"
+                ></a>
+                <h3>Was soll entfernt werden?</h3>
+            </header>
+            <p>
+            <!-- list all Items here -->
+            {% for item in products %}
+                <div class="row content-row">
+                    <img src="" alt="Profile Picture">
+                    <div class="text">{{ item[0] }}</div>
+                    <img src="" alt="Trash Icon" class="trash-icon
+                    " onclick="deleteRow(this)">
+                </div>
+            {% endfor %}
+            </p>
+            <footer>
+                <a
+                        href="#cancel"
+                        role="button"
+                        class="secondary"
+                        data-target="modal-remove-item"
+                        onclick="toggleModal(event)"
+                >Cancel</a
+                >
+                <button id="button-send" style="width: 30%" type="submit" form="new-item" data-target="modal-remove-item">
+                    Create
+                </button>
+            </footer>
+        </article>
+    </dialog>
+    <!-- ./ Modal remove item -->
         <script>
             
         </script>
         
-        <script src="{{ url_for('static', filename='js/send_video.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
         <script src="{{ url_for('static', filename='js/button_functions.js') }}"></script>
         <script src="{{ url_for('static', filename='js/switch_theme.js') }}"></script>
+        <script>
+            feather.replace();
+        </script>
     </body>
 
 </html>
