@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.colors.min.css') }}" />
     <link rel="stylesheet" href="{{ url_for('static', filename='css/pico.min.css') }}" />
+    <script src="{{ url_for('static', filename='js/feather.min.js') }}"></script>
 </head>
 
 <body>
@@ -132,6 +133,9 @@
         <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
         <script src="{{ url_for('static', filename='js/button_functions.js') }}"></script>
         <script src="{{ url_for('static', filename='js/switch_theme.js') }}"></script>
+        <script>
+            feather.replace();
+        </script>
     </body>
 
 </html>
