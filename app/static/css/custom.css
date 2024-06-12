@@ -17,6 +17,9 @@
     text-align: center;
 }
 .navbar-bottom{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding-right: 2%;
     padding-left: 2%;
 }
@@ -209,4 +212,8 @@
     width: 24px;
     height: 24px;
     cursor: pointer;
+}
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
 }

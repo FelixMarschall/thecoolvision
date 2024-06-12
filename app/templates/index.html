@@ -51,80 +51,79 @@
         </div>
 
         <div class="button-row general-controls">
-            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen</button>
-            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen</button>
-            <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/list_products/' + document.querySelector('.btn-pers.selected').id }">Rausnehmen</button>
+            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen <i data-feather="x-square"></i></button>
+            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen <i data-feather="file-plus"></i></button>
+            <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/list_products/' + document.querySelector('.btn-pers.selected').id }">Entfernen <i data-feather="trash-2"></i></button>
         </div>
     </div>
 
     <footer>
-        <nav class="navbar-bottom">
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-
-            </ul>
-
-            <div class="right">
+        <div class="grid-container">
+            <div class="darkmode">
                 <fieldset>
-                
                     <label>
                         ☼&nbsp;&nbsp;
                         <input name="opt-in" id="theme-toggle" type="checkbox" role="switch" checked/>
                         🌙
                     </label>
-                
                 </fieldset>
             </div>
-
-        </nav>
-        <section id="modal">
-            <button class="secondary" data-target="modal-example" onclick="toggleModal(event)">
-                New Item <i data-feather="file-plus"></i>
-            </button>
-        </section>
-        <!-- Modal example -->
-        <dialog id="modal-example">
-            <article>
-                <header>
-                    <a
-                            href="#close"
-                            aria-label="Close"
-                            rel="prev"
-                            data-target="modal-example"
-                            onclick="toggleModal(event)"
-                    ></a>
-                    <h3>New Item</h3>
-                </header>
-                <p>
-                <form id="new-item" action="/admin" method="post">
-    
-                    <label for="name">Name</label>
-                    <input type="text" id="name" name="name" required/>
-                    <label for="description">Description</label>
-                    <input type="text" id="description" name="description" required/>
-                    <label for="price">Price</label>
-                    <input type="number" id="price" name="price" min="0.0" step="0.1" aria-invalid="" required/>
-                </form>
-                </p>
-                <footer>
-                    <a
-                            href="#cancel"
-                            role="button"
-                            class="secondary"
-                            data-target="modal-example"
-                            onclick="toggleModal(event)"
-                    >Cancel</a
-                    >
-                    <button id="button-send" style="width: 30%" type="submit" form="new-item" data-target="modal-example">
-                        Create
-                    </button>
-                </footer>
-            </article>
-        </dialog>
-        <!-- ./ Modal example -->
+            <nav class="navbar-bottom">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </nav>
+            <div class="right"></div>
+        </div>
+        
+        
     </footer>
+    <section id="modal">
+        <button class="secondary" data-target="modal-example" onclick="toggleModal(event)">
+            New Item <i data-feather="file-plus"></i>
+        </button>
+    </section>
+    <!-- Modal example -->
+    <dialog id="modal-example">
+        <article>
+            <header>
+                <a
+                        href="#close"
+                        aria-label="Close"
+                        rel="prev"
+                        data-target="modal-example"
+                        onclick="toggleModal(event)"
+                ></a>
+                <h3>New Item</h3>
+            </header>
+            <p>
+            <form id="new-item" action="/admin" method="post">
 
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required/>
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" required/>
+                <label for="price">Price</label>
+                <input type="number" id="price" name="price" min="0.0" step="0.1" aria-invalid="" required/>
+            </form>
+            </p>
+            <footer>
+                <a
+                        href="#cancel"
+                        role="button"
+                        class="secondary"
+                        data-target="modal-example"
+                        onclick="toggleModal(event)"
+                >Cancel</a
+                >
+                <button id="button-send" style="width: 30%" type="submit" form="new-item" data-target="modal-example">
+                    Create
+                </button>
+            </footer>
+        </article>
+    </dialog>
+    <!-- ./ Modal example -->
         <script>
             
         </script>
