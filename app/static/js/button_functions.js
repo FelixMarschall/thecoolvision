@@ -37,8 +37,30 @@ function hinzufuegen() {
 }
 
 function abbrechen() {
-    document.querySelectorAll('.selected').forEach(button => {
+        document.querySelectorAll('.selected').forEach(button => {
         button.classList.remove('selected');
+    });
+}
+
+function entfernen(event) {
+    // get the button id of the selected button
+    var selectedButtons = document.querySelectorAll('.selected');
+    var personId;
+
+    // is selectedButtons empty?
+    if (selectedButtons.length == 0) {
+        console.log("No Person button selected");
+        return;
+    }
+
+    toggleModal(event);
+
+    // get id of button
+    selectedButtons.forEach(button => {
+        if (button.classList.contains('btn-pers')) {
+            personId = button.id;
+            console.log("Trigger Entfernen with PersonId " + personId);
+        }
     });
 }
 
