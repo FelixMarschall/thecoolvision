@@ -32,27 +32,58 @@ def get_stock():
         return "No stock available", 404
     return stock, 200
 
+@app.route("add_product_to_md", methods=["POST"])
+def add_product_to_md():
+    with app.app_context():
+        name = "New product xy"
+        description = "asfsfsfsf"
+        location_id = 1
+        qu_id_purchase = 1
+        qu_id_stock = 1
+        
+        data = {
+            "name": name,
+            "description": description,
+            "location_id": location_id,
+            "qu_id_purchase": qu_id_purchase,
+            "qu_id_stock": qu_id_stock,
+        }
+
+    response = api.post(f'objects/products', data)
+    return response.json, 200
 
 @app.route("/add_product", methods=["POST"])
 def add_product():
-    product_id = request.form.get('product_id')
-    amount = 1
-    price = 1
-    best_before_date = request.form.get('best_before_date')
+    with app.app_context():
+        product_id = request.form.get('product_id')
+        amount = 1
+        price = 1
+        best_before_date = request.form.get('best_before_date')
 
-    #add product to db
-    grocy.add_product(grocy, product_id, amount, price, best_before_date)
+        data = {
+            "amount": amount,
+            "best_before_date": best_before_date,
+            "price": price
+        }
 
-    #list_products needs product.user_id, so somehow we need to add a user_id to the product
+        response = api.post(f'stock/products/{product_id}/add', data)
+        return response.json, 200
 
-@app.route('/remove_product/<product_id>', methods=['POST'])
-def remove_product(product_id):
-    product_id = request.form.get('product_id')
-    amount = 1
-    spoiled = False
+@app.route("/remove_product", methods=["POST"])
+def remove_product():
+    with app.app_context():
+        product_id = request.form.get('product_id')
+        amount = 1
+        spoiled = False
 
-    #remove product from db
-    grocy.consume_product(grocy, product_id, amount, spoiled)
+        data = {
+            "amount": amount,
+            "spoiled": spoiled
+        }
+
+        response = api.post(f'stock/products/{product_id}/consume', data)
+        return response.json, 200
+
 
 @app.route('/list_products/<user_id>', methods=['GET'])
 def list_products(user_id):
