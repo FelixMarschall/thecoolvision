@@ -1,3 +1,5 @@
+let video = document.querySelector('#webcamVideo');
+
 function selectButton(selectedId) {
     // Check if the button is already selected
     var button = document.getElementById(selectedId);
@@ -40,6 +42,7 @@ function abbrechen() {
         document.querySelectorAll('.selected').forEach(button => {
         button.classList.remove('selected');
     });
+    video.play();
 }
 
 function entfernen(event) {
@@ -148,12 +151,29 @@ function getUnitSelectedButton(buttonId) {
     return buttonTexts[1];
 }
 
+
 function takePhoto() {
     var overlay = document.querySelector(".countdown-overlay");
     var countdown = 3;
+    video.play();
     var countdownInterval = setInterval(function() {
         if (countdown === 0) {
             console.log("Take the photo!");
+
+            let canvas = document.createElement('canvas');
+            video.pause();
+            
+            // var canvas = document.createElement('canvas');
+            // var context = canvas.getContext('2d');
+            // canvas.width = video.videoWidth;
+            // canvas.height = video.videoHeight;
+            // context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // var image = canvas.toDataURL('image/png');
+            // var link = document.createElement('a');
+            // link.href = image;
+            // link.download = 'photo.png';
+            // link.click();
+
             overlay.innerText = "";
             clearInterval(countdownInterval);
         } else {
