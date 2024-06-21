@@ -33,8 +33,7 @@ function selectButton(selectedId) {
 
 function hinzufuegen() {
     var selectedButtons = document.querySelectorAll('.selected');
-    var selectedButtonsText = [];
-    var amount, unit, person;
+    var mhdDelay, mhdUnit, personName;
 
     if (selectedButtons.length < 2) {
         setStatusMessage("Please select a person and a best before date.");
@@ -43,14 +42,20 @@ function hinzufuegen() {
 
     selectedButtons.forEach(button => {
         if (button.classList.contains('btn-mhd')) {
-            unit = getUnitSelectedButton(button.id);
-            amount = getAmountSelectedButton(button.id);
+            mhdUnit = getUnitSelectedButton(button.id);
+            mhdDelay = getAmountSelectedButton(button.id);
         } else if (button.classList.contains('btn-pers')) {
-            person = button.innerText;
+            personName = button.innerText;
         }
     });
+    
+    // implement the fetch request to add the item to the database HERE
+    // use personName, mdhDelay (Anzahl an Tagen/Wochen/Monaten) and mhdUnit (Tag/Woche/Monat).
+    // Den Name vom Produkt bekommst du über openapi.process_image("app/temp/image.jpg") in der main.py Datei.
+    // Dann musst du noch in deiner Funktion das Datum berechnen, geht bestimmt mit einem Modul in python, frag am besten ChatGPT.
+    
 
-    console.log(amount, unit, person);
+    // Implementierung
 }
 
 function abbrechen() {

@@ -4,6 +4,7 @@ from openai import OpenAI
 
 # https://platform.openai.com/docs/guides/vision
 
+
 class OpenAIWrapper:
     def __init__(self, api_key):
         self.api_key = api_key
@@ -42,9 +43,6 @@ class OpenAIWrapper:
     def process_image(self, image_path):
         base64_image = self.encode_image(image_path)
         payload = self.get_payload(base64_image)
-        response = requests.post("https://api.openai.com/v1/chat/completions", headers=self.headers, json=payload)
+        response = requests.post(
+            "https://api.openai.com/v1/chat/completions", headers=self.headers, json=payload)
         return response.json()['choices'][0]['message']['content']
-    
-
-
-    
