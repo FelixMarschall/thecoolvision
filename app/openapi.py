@@ -2,6 +2,8 @@ import base64
 import requests
 from openai import OpenAI
 
+# https://platform.openai.com/docs/guides/vision
+
 class OpenAIWrapper:
     def __init__(self, api_key):
         self.api_key = api_key

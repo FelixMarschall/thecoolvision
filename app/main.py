@@ -13,7 +13,7 @@ api = GrocyAPI('https://grocy.softghost.dev/api/', 'My6mrvmlS75bzb7WPKE6YIFly4ZM
 openapi = OpenAIWrapper('sk-proj-W2nhu2vyRecVfoAoz8QwT3BlbkFJuppyCRB2v6cZdSi9MZ56')
 
 
-print(openapi.process_image("app/test/burger.jpeg"))
+# print(openapi.process_image("app/test/burger.jpeg"))
 
 log = logging.getLogger(__name__)
 app = Flask(__name__)
