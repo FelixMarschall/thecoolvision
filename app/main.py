@@ -47,15 +47,6 @@ def remove_product(product_id):
     #remove product from db
     grocy.consume_product(grocy, product_id, amount, spoiled)
 
-@app.route('/list_products/<user_id>', methods=['GET'])
-def list_products(user_id):
-    products = grocy.stock()
-
-    #get products for matching user ids
-    user_products = [product for product in products if product.user_id == user_id]
-    #this needs to be programmed in javascript, so that the user_id is passed to the server
-    return render_template("index.html", products=jsonify([product.__dict__ for product in user_products]))
-
 # REST Routes
 @app.route("/stock", methods=["GET"])
 def get_stock():

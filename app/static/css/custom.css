@@ -10,18 +10,21 @@
     padding-top: 10%;
 }
 
+.darkmode {
+    margin-left: 5%;
+}
+
 .remove-title{
     margin-top: 2%;
     padding: 10px;
     border: none;
     text-align: center;
 }
+
 .navbar-bottom{
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-right: 2%;
-    padding-left: 2%;
 }
 
 .change-mhd {
@@ -115,6 +118,7 @@
     position: relative;
     width: 640px;
     height: 450px;
+    margin-top: 5%;
 }
 
 .video-feed {
@@ -216,4 +220,11 @@
 .grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+}
+
+.non-selectable {
+    user-select: none; /* Standard syntax */
+    -webkit-user-select: none; /* Chrome, Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
 }
