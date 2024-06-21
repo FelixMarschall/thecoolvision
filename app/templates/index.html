@@ -26,35 +26,43 @@
             <div class="button-column mhd-buttons">
 
                 <div class="container">
-                    <button class="change-mhd decrease-mhd" id="decrease-days-button" onclick="decrease('days-button')">-</button>
+                    <button class="change-mhd decrease-mhd" id="decrease-days-button"
+                        onclick="decrease('days-button')">-</button>
                     <button class="btn-mhd" id="days-button" onclick="selectButton(this.id)">3 Tage</button>
-                    <button class="change-mhd increase-mhd" id="increase-days-button" onclick="increase('days-button')">+</button>
+                    <button class="change-mhd increase-mhd" id="increase-days-button"
+                        onclick="increase('days-button')">+</button>
                 </div>
                 <div class="container">
-                    <button class="change-mhd decrease-mhd" id="decrease-days-button" onclick="decrease('weeks-button')">-</button>
+                    <button class="change-mhd decrease-mhd" id="decrease-days-button"
+                        onclick="decrease('weeks-button')">-</button>
                     <button class="btn-mhd" id="weeks-button" onclick="selectButton(this.id)">1 Woche</button>
-                    <button class="change-mhd increase-mhd" id="increase-days-button" onclick="increase('weeks-button')">+</button>
+                    <button class="change-mhd increase-mhd" id="increase-days-button"
+                        onclick="increase('weeks-button')">+</button>
                 </div>
                 <div class="container">
-                    <button class="change-mhd decrease-mhd" id="decrease-days-button" onclick="decrease('months-button')">-</button>
+                    <button class="change-mhd decrease-mhd" id="decrease-days-button"
+                        onclick="decrease('months-button')">-</button>
                     <button class="btn-mhd" id="months-button" onclick="selectButton(this.id)">1 Monat</button>
-                    <button class="change-mhd increase-mhd" id="increase-days-button" onclick="increase('months-button')">+</button>
+                    <button class="change-mhd increase-mhd" id="increase-days-button"
+                        onclick="increase('months-button')">+</button>
                 </div>
             </div>
-            
+
         </div>
 
         <div class="button-grid names-grid">
             {% for user in users %}
-                <button class="btn-pers" id="{{ user.id }}" onclick="selectButton(this.id)">{{ user.display_name }}</button>
+            <button class="btn-pers" id="{{ user.id }}" onclick="selectButton(this.id)">{{ user.display_name }}</button>
             {% endfor %}
         </div>
 
         <div class="button-row general-controls">
-            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen <i data-feather="x-square"></i></button>
-            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen <i data-feather="file-plus"></i></button>
-            <!-- <button class="pico-background-amber-250 big-button-action" onclick="if (document.querySelector('.btn-pers.selected')) { window.location.href='/list_products/' + document.querySelector('.btn-pers.selected').id }">Entfernen <i data-feather="trash-2"></i></button> -->
-            <button class="pico-background-amber-250 big-button-action" data-target="modal-remove-item" onclick="entfernen(event)">Entfernen <i data-feather="trash-2"></i></button>
+            <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen <i
+                    data-feather="x-square"></i></button>
+            <button class="pico-background-green-350 big-button-action" onclick="hinzufuegen()">Hinzufügen <i
+                    data-feather="file-plus"></i></button>
+            <button class="pico-background-amber-250 big-button-action" data-target="modal-remove-item"
+                onclick="entfernen(event)">Entfernen <i data-feather="trash-2"></i></button>
         </div>
     </div>
 
@@ -64,77 +72,100 @@
                 <fieldset>
                     <label>
                         ☼&nbsp;&nbsp;
-                        <input name="opt-in" id="theme-toggle" type="checkbox" role="switch" checked/>
+                        <input name="opt-in" id="theme-toggle" type="checkbox" role="switch" checked />
                         🌙
                     </label>
                 </fieldset>
             </div>
             <nav class="navbar-bottom">
                 <ul>
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">About</a></li>
+                    <button data-target="modal-about"
+                        onclick="toggleModal(event)">About</button>
+                    <dialog id="modal-about">
+                        <article>
+                            <header>
+                                <a href="#close" aria-label="Close" rel="prev" data-target="modal-about"
+                                    onclick="toggleModal(event)"></a>
+                                <h3>TheCoolVision</h3>
+                            </header>
+                            <p>
+                                This project is part of a university course at the Karlsruher Institute of
+                                Technology (KIT). The goal is to create a vision system that can be used to track
+                                the inventory of a fridge.
+                                Our goal for the project was to make it as user friendly as possible to interact
+                                with.
+                            </p>
+                            <ul>
+                                <li>Contributors: </li>
+                                <li>Aaron Kreis</li>
+                                <li>Felix Marschall</li>
+                                <li>Moritz Spohn</li>
+                            </ul>
+
+                            <footer>
+                                <a href="#cancel" role="button" class="secondary" data-target="modal-about"
+                                    onclick="toggleModal(event)">
+                                    Cancel
+                                </a>
+                            </footer>
+
+                        </article>
+                    </dialog>
+
                 </ul>
             </nav>
             <div class="right">
-                
+
 
             </div>
         </div>
-        
-        
+
+
     </footer>
     <!-- Modal remove item -->
     <dialog id="modal-remove-item">
         <article>
             <header>
-                <a
-                        href="#close"
-                        aria-label="Close"
-                        rel="prev"
-                        data-target="modal-remove-item"
-                        onclick="toggleModal(event)"
-                ></a>
+                <a href="#close" aria-label="Close" rel="prev" data-target="modal-remove-item"
+                    onclick="toggleModal(event)"></a>
                 <h3>Was soll entfernt werden?</h3>
             </header>
             <p>
-            <!-- list all Items here -->
-            {% for item in products %}
-                <div class="row content-row">
-                    <img src="" alt="Profile Picture">
-                    <div class="text">{{ item[0] }}</div>
-                    <img src="" alt="Trash Icon" class="trash-icon
+                <!-- list all Items here -->
+                {% for item in products %}
+            <div class="row content-row">
+                <img src="" alt="Profile Picture">
+                <div class="text">{{ item[0] }}</div>
+                <img src="" alt="Trash Icon" class="trash-icon
                     " onclick="deleteRow(this)">
-                </div>
+            </div>
             {% endfor %}
             </p>
             <footer>
-                <a
-                        href="#cancel"
-                        role="button"
-                        class="secondary"
-                        data-target="modal-remove-item"
-                        onclick="toggleModal(event)"
-                >Cancel</a
-                >
-                <button id="button-send" style="width: 30%" type="submit" form="new-item" data-target="modal-remove-item">
+                <a href="#cancel" role="button" class="secondary" data-target="modal-remove-item"
+                    onclick="toggleModal(event)">
+                    Cancel
+                </a>
+                <button id="button-send" style="width: 30%" type="submit" form="new-item"
+                    data-target="modal-remove-item">
                     Create
                 </button>
             </footer>
         </article>
     </dialog>
     <!-- ./ Modal remove item -->
-        <script>
-            
-        </script>
-        
+    <script>
 
-        <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/button_functions.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/switch_theme.js') }}"></script>
-        <script src="{{ url_for('static', filename='js/send_video.js') }}"></script>
-        <script>
-            feather.replace();
-        </script>
-    </body>
+    </script>
+
+
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/button_functions.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/switch_theme.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/send_video.js') }}"></script>
+    <script>
+        feather.replace();
+    </script>
+</body>
 
 </html>
