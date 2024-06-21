@@ -1,6 +1,14 @@
-let video = document.querySelector('#webcamVideo');
 let takePhotoButton = document.querySelector("#take-photo-button");
 let statusMessage = document.querySelector("#status-message");
+let video = document.querySelector('video');
+
+// Get access to the webcam TODO: Check if the function is needed
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(error => console.error('Error:', error));
 
 function setStatusMessage(statusMessageText) {
     statusMessage.innerText = statusMessageText;
@@ -189,8 +197,37 @@ function getUnitSelectedButton(buttonId) {
     return buttonTexts[1];
 }
 
-
 function takePhoto() {
+    let canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0);
+    let imageDataUrl = canvas.toDataURL('image/jpeg');
+
+    // Convert the data URL to a Blob
+    let byteString = atob(imageDataUrl.split(',')[1]);
+    let mimeString = imageDataUrl.split(',')[0].split(':')[1].split(';')[0];
+    let arrayBuffer = new ArrayBuffer(byteString.length);
+    let uint8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+    }
+    let blob = new Blob([uint8Array], { type: mimeString });
+
+    // Send the Blob to the server
+    let formData = new FormData();
+    formData.append('image', blob);
+    fetch('/process_image', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
+
+function startPhotoProcess() {
     var overlay = document.querySelector(".countdown-overlay");
     var countdown = 3;
 
@@ -198,23 +235,11 @@ function takePhoto() {
     var countdownInterval = setInterval(function () {
         if (countdown === 0) {
             console.log("Take the photo!");
-
-            let canvas = document.createElement('canvas');
+            takePhoto();
+            // Stop the video
             video.pause();
-            takePhotoButton.innerHTML = "Retake the photo 📸";
-
-            // var canvas = document.createElement('canvas');
-            // var context = canvas.getContext('2d');
-            // canvas.width = video.videoWidth;
-            // canvas.height = video.videoHeight;
-            // context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            // var image = canvas.toDataURL('image/png');
-            // var link = document.createElement('a');
-            // link.href = image;
-            // link.download = 'photo.png';
-            // link.click();
-
             overlay.innerText = "";
+            takePhotoButton.innerHTML = "Retake the photo 📸";
             clearInterval(countdownInterval);
         } else {
             overlay.innerText = countdown;
