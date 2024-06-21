@@ -16,20 +16,20 @@ navigator.mediaDevices.getUserMedia({ video: true })
                 const formData = new FormData();
                 formData.append('video', event.data, 'webcam_stream.webm');
 
-                fetch('/process_video', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            console.log('Video data sent successfully');
-                        } else {
-                            console.error('Failed to send video data');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error sending video data:', error);
-                    });
+                // fetch('/process_video', {
+                //     method: 'POST',
+                //     body: formData
+                // })
+                //     .then(response => {
+                //         if (response.ok) {
+                //             console.log('Video data sent successfully');
+                //         } else {
+                //             console.error('Failed to send video data');
+                //         }
+                //     })
+                //     .catch(error => {
+                //         console.error('Error sending video data:', error);
+                //     });
             }
         };
 
