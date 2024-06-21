@@ -51,7 +51,7 @@ function hinzufuegen() {
     
     // implement the fetch request to add the item to the database HERE
     // use personName, mdhDelay (Anzahl an Tagen/Wochen/Monaten) and mhdUnit (Tag/Woche/Monat).
-    // Den Name vom Produkt bekommst du über openapi.process_image("app/temp/image.jpg") in der main.py Datei.
+    // Den Name vom Produkt bekommst du über openapi.process_image("thecoolvision/app/temp/image.jpg") in der main.py Datei.
     // Dann musst du noch in deiner Funktion das Datum berechnen, geht bestimmt mit einem Modul in python, frag am besten ChatGPT.
     
 
