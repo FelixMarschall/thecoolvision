@@ -1,6 +1,6 @@
 // Select the video element and the "take a photo" button
 let video = document.querySelector('video');
-let button = document.querySelector('#take-photo-button');
+let photoButton = document.querySelector('#take-photo-button');
 
 // Get access to the webcam
 navigator.mediaDevices.getUserMedia({ video: true })
@@ -11,7 +11,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
     .catch(error => console.error('Error:', error));
 
 // Add a click event listener to the "take a photo" button
-button.addEventListener('click', () => {
+photoButton.addEventListener('click', () => {
     let canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
@@ -36,7 +36,7 @@ button.addEventListener('click', () => {
         method: 'POST',
         body: formData
     })
-    .then(response => response.text())
-    .then(data => console.log(data))
-    .catch(error => console.error('Error:', error));
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
 });

@@ -1,9 +1,21 @@
+let video = document.querySelector('#webcamVideo');
+let takePhotoButton = document.querySelector("#take-photo-button");
+let statusMessage = document.querySelector("#status-message");
+
+function setStatusMessage(statusMessageText) {
+    statusMessage.innerText = statusMessageText;
+    statusMessage.hidden = false;
+    setTimeout(() => {
+        statusMessage.hidden = true;
+    }, 3000); // 3 seconds
+}
+
 function selectButton(selectedId) {
     // Check if the button is already selected
     var button = document.getElementById(selectedId);
     var isSelected = button.classList.contains('selected');
     var buttonClass = button.classList[0];
-    
+
 
     // Deselect all buttons if the button is already selected
     if (isSelected) {
@@ -24,6 +36,11 @@ function hinzufuegen() {
     var selectedButtonsText = [];
     var amount, unit, person;
 
+    if (selectedButtons.length < 3) {
+        setStatusMessage("Please select a person and a best before date.");
+        return;
+    }
+
     selectedButtons.forEach(button => {
         if (button.classList.contains('btn-mhd')) {
             unit = getUnitSelectedButton(button.id);
@@ -37,36 +54,28 @@ function hinzufuegen() {
 }
 
 function abbrechen() {
-        document.querySelectorAll('.selected').forEach(button => {
+    document.querySelectorAll('.selected').forEach(button => {
         button.classList.remove('selected');
     });
+    video.play();
+    takePhotoButton.innerHTML = "Take a photo 📸";
 }
 
 function entfernen(event) {
-    // get the button id of the selected button
+    // Get all selected buttons
     var selectedButtons = document.querySelectorAll('.selected');
-    var personId, personDisplayName;
-
-    // is selectedButtons empty?
-    if (selectedButtons.length == 0) {
-        console.log("No Person button selected");
+    
+    // Find a selected person button
+    var personButton = Array.from(selectedButtons).find(button => button.classList.contains('btn-pers'));
+    
+    // Check if a person button is selected
+    if (!personButton) {
+        setStatusMessage("Please select a person to remove inventory from.");
         return;
     }
 
-    const table = document.getElementById("persons-items");
-    const tbody = table.tBodies[0];
-    tbody.innerHTML = "";
-
     toggleModal(event);
-
-    // get id of button
-    selectedButtons.forEach(button => {
-        if (button.classList.contains('btn-pers')) {
-            personId = button.id;
-            personDisplayName = button.innerText;
-            console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
-        }
-    });
+    console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
 
     // make request to get item by id and add content to table with persons-items id, item-name
     fetch(`/users/${personUsername}/stock`, {
@@ -111,7 +120,7 @@ function deleteItem(event, itemId) {
 // Function to increase the amount
 function increase(buttonId) {
     const button = document.getElementById(buttonId);
-    if (! button.classList.contains('selected')) {
+    if (!button.classList.contains('selected')) {
         selectButton(buttonId);
     }
     const buttonTexts = button.innerText.split(' ')
@@ -124,7 +133,7 @@ function increase(buttonId) {
 // Function to decrease the amount
 function decrease(buttonId) {
     const button = document.getElementById(buttonId);
-    if (! button.classList.contains('selected')) {
+    if (!button.classList.contains('selected')) {
         selectButton(buttonId);
     }
     const buttonTexts = button.innerText.split(' ')
@@ -136,7 +145,7 @@ function decrease(buttonId) {
     checkGrammer(buttonId);
 }
 
-function checkGrammer(buttonID){
+function checkGrammer(buttonID) {
     var button = document.getElementById(buttonID);
     var buttonText = button.innerText;
     var buttonTexts = buttonText.split(' ');
@@ -175,12 +184,31 @@ function getUnitSelectedButton(buttonId) {
     return buttonTexts[1];
 }
 
+
 function takePhoto() {
     var overlay = document.querySelector(".countdown-overlay");
     var countdown = 3;
-    var countdownInterval = setInterval(function() {
+
+    video.play();
+    var countdownInterval = setInterval(function () {
         if (countdown === 0) {
             console.log("Take the photo!");
+
+            let canvas = document.createElement('canvas');
+            video.pause();
+            takePhotoButton.innerHTML = "Retake the photo 📸";
+
+            // var canvas = document.createElement('canvas');
+            // var context = canvas.getContext('2d');
+            // canvas.width = video.videoWidth;
+            // canvas.height = video.videoHeight;
+            // context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // var image = canvas.toDataURL('image/png');
+            // var link = document.createElement('a');
+            // link.href = image;
+            // link.download = 'photo.png';
+            // link.click();
+
             overlay.innerText = "";
             clearInterval(countdownInterval);
         } else {
