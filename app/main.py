@@ -4,12 +4,13 @@ from flask import Flask, render_template, request
 import logging
 import requests
 
+from app.openapi import OpenAIWrapper
 from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
 api = GrocyAPI('https://grocy.softghost.dev/api/', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
-
+openapi = OpenAIWrapper('sk-proj-W2nhu2vyRecVfoAoz8QwT3BlbkFJuppyCRB2v6cZdSi9MZ56')
 
 log = logging.getLogger(__name__)
 app = Flask(__name__)

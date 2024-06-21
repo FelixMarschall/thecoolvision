@@ -53,6 +53,10 @@ function entfernen(event) {
         return;
     }
 
+    const table = document.getElementById("persons-items");
+    const tbody = table.tBodies[0];
+    tbody.innerHTML = "";
+
     toggleModal(event);
 
     // get id of button
@@ -64,21 +68,44 @@ function entfernen(event) {
         }
     });
 
-    // make request to get item by id
-    // fetch(`/person/${personId}`, {
-    //     method: 'GET',
-    //     headers: {
-    //         [header]: token,
-    //     }
-    // })
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         // insert values into form with id form_update
-    //         const form = document.getElementById("delete-person");
-    //         form.querySelector("#id").value = data.id;
-    //         form.querySelector("#name").value = data.name;
-    //         form.querySelector("#description").value = data.description;
-    //     }).catch((error) => console.error('Error:', error));
+    // make request to get item by id and add content to table with persons-items id, item-name
+    fetch(`/users/${personUsername}/stock`, {
+        method: 'GET',
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            // console.log(data);            
+            // insert array values into table with id <table id="persons-items">
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                cell1.innerHTML = item.id;
+                cell2.innerHTML = item.product.name;
+                cell3.innerHTML = item.amount;
+                cell4.innerHTML = `<a class="clickable-icon" onclick="deleteItem(event, ${item.id})"><i data-feather="trash-2"></i></a>`;
+            });
+            feather.replace();
+        }).catch((error) => console.error('Error:', error));
+}
+
+function deleteItem(event, itemId) {
+    event.preventDefault();
+    console.log("Delete Item with ID " + itemId);
+    fetch(`/items/${itemId}`, {
+        method: 'DELETE',
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            // remove row from table
+            const table = document.getElementById("persons-items");
+            const tbody = table.tBodies[0];
+            const row = document.getElementById(itemId);
+            tbody.removeChild(row);
+        }).catch((error) => console.error('Error:', error));
 }
 
 // Function to increase the amount
