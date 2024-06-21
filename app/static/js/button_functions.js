@@ -36,7 +36,7 @@ function hinzufuegen() {
     var selectedButtonsText = [];
     var amount, unit, person;
 
-    if (selectedButtons.length < 3) {
+    if (selectedButtons.length < 2) {
         setStatusMessage("Please select a person and a best before date.");
         return;
     }
