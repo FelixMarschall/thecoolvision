@@ -1,5 +1,5 @@
 from urllib.parse import urljoin
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, jsonify
 
 import logging
 import requests
@@ -15,6 +15,7 @@ log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 
+
 @app.route("/")
 def index():
     return render_template("index.html")
@@ -27,36 +28,121 @@ def get_stock():
         return "No stock available", 404
     return stock, 200
 
+@app.route("/")
+def index():
+    users = api.get("users")
+
+    # filter out user with display_name "admin"
+    users = [user for user in users if user["display_name"] != "admin"]
+
+    return render_template("index.html", users=users)
+
+
+@app.route("add_product_to_md", methods=["POST"])
+def add_product_to_md(name):
+    with app.app_context():
+        #name = "New product xy"
+        description = ""
+        location_id = 1
+        qu_id_purchase = 2 # pack=3 oder Piece=2
+        qu_id_stock = 2 # pack=3 oder Piece=2 
+        
+        data = {
+            "name": name,
+            "description": description,
+            "location_id": location_id,
+            "qu_id_purchase": qu_id_purchase,
+            "qu_id_stock": qu_id_stock,
+        }
+
+    response = api.post(f'objects/products', data)
+    return response.json(), 200
 
 @app.route("/add_product", methods=["POST"])
-def add_product():
-    product_id = request.form.get('product_id')
-    amount = 1
-    price = 1
-    best_before_date = request.form.get('best_before_date')
+def add_product(product_id):
+    with app.app_context():
+        #product_id = request.form.get('product_id')
+        amount = 1
+        price = 1
+        best_before_date = request.form.get('best_before_date')
 
-    #add product to db
-    grocy.add_product(grocy, product_id, amount, price, best_before_date)
+        data = {
+            "amount": amount,
+            "best_before_date": best_before_date,
+            "price": price,
+            "note": 'Aaron'
+        }
 
-    #list_products needs product.user_id, so somehow we need to add a user_id to the product
+        response = api.post(f'stock/products/{product_id}/add', data)
+        return response.json, 200
 
-@app.route('/remove_product/<product_id>', methods=['POST'])
-def remove_product(product_id):
-    product_id = request.form.get('product_id')
-    amount = 1
-    spoiled = False
+@app.route("/list_products_for_user", methods=["GET"])
+def list_products_for_user():
+    # get stock
+    stock = api.get("stock")
+    list_of_entries = []
+    # iterate over stock
+    for product in stock:
+        # get each product id in stock
+        product_id = product['product_id']
+        # get all entries for each product id
+        entries = api.get(f"stock/products/{product_id}/entries")
+        # iterate over all entries for a given product
+        for entry in entries:
+            # create list with product_id and the according user name
+            list_of_entries.append([entry['product_id'], entry['note']])
 
-    #remove product from db
-    grocy.consume_product(grocy, product_id, amount, spoiled)
+    found_products = []
+    ###################################
+    user = 'Peter'  # user name from UI needs to be implemented
+    # user = request.form.get('username')
+    ###################################
 
-@app.route('/list_products/<user_id>', methods=['GET'])
-def list_products(user_id):
-    products = grocy.stock()
+    # iterate trough all entries to find 
+    for entry in list_of_entries:
+        # if note (user name) is equal to the wanted user, the product ids are appended
+        if entry[1] == user:
+            found_products.append(entry[0])
 
-    #get products for matching user ids
-    user_products = [product for product in products if product.user_id == user_id]
-    #this needs to be programmed in javascript, so that the user_id is passed to the server
-    return jsonify([product.__dict__ for product in user_products])
+    #print details for products (not essential)
+    for product_id in found_products:
+        product = api.get(f"stock/products/{product_id}")
+        # here instead of printing the product ids need to be displayed
+        # print(product['product']['name'])
+
+
+
+@app.route("/remove_product", methods=["POST"])
+def remove_product():
+    with app.app_context():
+        product_id = request.form.get('product_id')
+        amount = 1
+        spoiled = False
+
+        data = {
+            "amount": amount,
+            "spoiled": spoiled
+        }
+
+        response = api.post(f'stock/products/{product_id}/consume', data)
+        return response.json, 200
+
+def add_product_by_photo():
+   #get products of master data
+   masterdata = api.get("objects/products")
+   generated_name = 'FOTO_Produkt'
+   for product in masterdata:
+       if product['name'] == generated_name:
+           product_id = product['id']
+           add_product(product_id)
+           #print(product_id)
+           break
+   else:
+       response, status = add_product_to_md(generated_name)
+       created_product_id = response['created_object_id']
+       #print(created_product_id)
+       add_product(created_product_id)
+   #print(masterdata)
 
 
 @app.route("/process_image", methods=["POST"])
