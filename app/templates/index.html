@@ -14,15 +14,26 @@
 </head>
 
 <body>
+
+    <!-- Status message -->
+    <div class="status-overlay">
+        <article id="status-message" class="message non-selectable" hidden></article>
+    </div>
+    <!-- ./ Status message -->
+
     <div class="container-fluid">
 
         <div class="grid">
+
+            <!-- Video container -->
             <div class="container video-container" onclick="startPhotoProcess()">
                 <video class="video-feed" id="webcamVideo" autoplay></video>
                 <div class="countdown-overlay"></div>
                 <button id="take-photo-button" class="overlay photo-button-overlay">Take a photo 📸</button>
             </div>
+            <!-- ./ Video container -->
 
+            <!-- Mhd buttons -->
             <div class="button-column mhd-buttons">
 
                 <div class="container">
@@ -47,15 +58,19 @@
                         onclick="increase('months-button')">+</button>
                 </div>
             </div>
+            <!-- ./ Mhd buttons -->
 
         </div>
 
+        <!-- Names Grid -->
         <div class="button-grid names-grid">
             {% for user in users %}
             <button class="btn-pers" id="{{ user.id }}" onclick="selectButton(this.id)">{{ user.display_name }}</button>
             {% endfor %}
         </div>
+        <!-- ./ Names Grid -->
 
+        <!-- General control buttons -->
         <div class="button-row general-controls">
             <button class="pico-background-red-350 big-button-action" onclick="abbrechen()">Abbrechen <i
                     data-feather="x-square"></i></button>
@@ -64,12 +79,14 @@
             <button class="pico-background-amber-250 big-button-action" data-target="modal-remove-item"
                 onclick="entfernen(event)">Entfernen <i data-feather="trash-2"></i></button>
         </div>
+        <!-- ./ General control buttons -->
     </div>
 
     <footer>
 
         <nav class="navbar-bottom container">
 
+            <!-- Dark mode switch -->
             <div class="left">
                 <fieldset>
                     <label class="non-selectable">
@@ -79,14 +96,7 @@
                     </label>
                 </fieldset>
             </div>
-
-            <div>
-
-                <article class="message non-selectable" hidden></article>
-                    <p id="status-message"></p>
-                </article>
-
-            </div>
+            <!-- ./ Dark mode switch -->
 
             <div class="right">
                 <a class="secondary non-selectable" href="" data-target="modal-about" onclick="toggleModal(event)">
