@@ -52,22 +52,21 @@ def add_product_by_photo():
 
 @app.route("add_product_to_md", methods=["POST"])
 def add_product_to_md(name):
-        name #= "New product xyx"
-        description = ""
-        location_id = 2
-        qu_id_purchase = 2 #pack=3 oder Piece=2
-        qu_id_stock = 2 #pack=3 oder Piece=2 
-        #qu_factor_purchase_to_stock = 1
+    name #= "New product xyx"
+    description = ""
+    location_id = 2
+    qu_id_purchase = 2 #pack=3 oder Piece=2
+    qu_id_stock = 2 #pack=3 oder Piece=2 
+    #qu_factor_purchase_to_stock = 1
 
-        data = {
-            "name": name,
-            "description": description,
-            "location_id": location_id,
-            "qu_id_purchase": qu_id_purchase,
-            "qu_id_stock": qu_id_stock,
-            #"qu_factor_purchase_to_stock": qu_factor_purchase_to_stock
-        }
-
+    data = {
+        "name": name,
+        "description": description,
+        "location_id": location_id,
+        "qu_id_purchase": qu_id_purchase,
+        "qu_id_stock": qu_id_stock,
+        #"qu_factor_purchase_to_stock": qu_factor_purchase_to_stock
+    }
     response = api.post(f'objects/products', data)
     #print(response.json())
     return response.json(), 200
@@ -109,14 +108,40 @@ def remove_product():
         return response.json, 200
 
 
-@app.route('/list_products/<user_id>', methods=['GET'])
-def list_products(user_id):
-    products = grocy.stock()
 
-    #get products for matching user ids
-    user_products = [product for product in products if product.user_id == user_id]
-    #this needs to be programmed in javascript, so that the user_id is passed to the server
-    return render_template("index.html", products=jsonify([product.__dict__ for product in user_products]))
+@app.route("/list_products_for_user", methods=["GET"])
+def list_products_for_user():
+    # get stock
+    stock = api.get("stock")
+    list_of_entries = []
+    # iterate over stock
+    for product in stock:
+        # get each product id in stock
+        product_id = product['product_id']
+        # get all entries for each product id
+        entries = api.get(f"stock/products/{product_id}/entries")
+        # iterate over all entries for a given product
+        for entry in entries:
+            # create list with product_id and the according user name
+            list_of_entries.append([entry['product_id'], entry['note']])
+
+    found_products = []
+    ###################################
+    user = 'Peter'  # user name from UI needs to be implemented
+    # user = request.form.get('username')
+    ###################################
+
+    # iterate trough all entries to find 
+    for entry in list_of_entries:
+        # if note (user name) is equal to the wanted user, the product ids are appended
+        if entry[1] == user:
+            found_products.append(entry[0])
+
+    #print details for products (not essential)
+    for product_id in found_products:
+        product = api.get(f"stock/products/{product_id}")
+        # here instead of printing the product ids need to be displayed
+        # print(product['product']['name'])
 
 
 @app.route("/process_image", methods=["POST"])
