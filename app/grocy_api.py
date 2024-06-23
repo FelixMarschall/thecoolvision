@@ -9,8 +9,18 @@ class GrocyAPI:
             'GROCY-API-KEY': api_key
         }
 
+    # def get(self, endpoint):
+    #     url = urljoin(self.base_url, endpoint)
+    #     response = requests.get(url, headers=self.headers)
+    #     # response.raise_for_status()  # Raise an exception if the request failed
+    #     return response.json()
+    
     def get(self, endpoint):
         url = urljoin(self.base_url, endpoint)
-        response = requests.get(url, headers=self.headers)
-        # response.raise_for_status()  # Raise an exception if the request failed
+        response = requests.request("GET", url, headers=self.headers)
         return response.json()
+    
+    def post(self, endpoint, data):
+        url = urljoin(self.base_url, endpoint)
+        response = requests.post(url, headers=self.headers, json=data)
+        return response
