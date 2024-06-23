@@ -4,16 +4,21 @@ from flask import Flask, render_template, request, jsonify
 import logging
 import requests
 
+from openapi import OpenAIWrapper
 from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
 api = GrocyAPI('https://grocy.softghost.dev/api/', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
+openapi = OpenAIWrapper('sk-proj-W2nhu2vyRecVfoAoz8QwT3BlbkFJuppyCRB2v6cZdSi9MZ56')
 
+
+# print(openapi.process_image("app/test/burger.jpeg"))
 
 log = logging.getLogger(__name__)
 app = Flask(__name__)
 
+# Frontend Routes
 
 
 @app.route("/")
@@ -150,13 +155,12 @@ def process_image():
         logging.error("No image file in request")
         return "No image file in request", 400
     file = request.files["image"]
-    file.save("app/temp/image.jpg")
+    file.save("thecoolvision/app/temp/image.jpg")
     return "Image data processed successfully", 200
 
 @app.route("/users", methods=["GET"])
 def get_users():
     users = api.get("users")
-    print(users)
     if not users:
         return "No users available", 404
     return users, 200

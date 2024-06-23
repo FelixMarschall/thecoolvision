@@ -1,9 +1,29 @@
+let takePhotoButton = document.querySelector("#take-photo-button");
+let statusMessage = document.querySelector("#status-message");
+let video = document.querySelector('video');
+
+// Get access to the webcam TODO: Check if the function is needed
+navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+        video.srcObject = stream;
+        video.play();
+    })
+    .catch(error => console.error('Error:', error));
+
+function setStatusMessage(statusMessageText) {
+    statusMessage.innerText = statusMessageText;
+    statusMessage.hidden = false;
+    setTimeout(() => {
+        statusMessage.hidden = true;
+    }, 3000); // 3 seconds
+}
+
 function selectButton(selectedId) {
     // Check if the button is already selected
     var button = document.getElementById(selectedId);
     var isSelected = button.classList.contains('selected');
     var buttonClass = button.classList[0];
-    
+
 
     // Deselect all buttons if the button is already selected
     if (isSelected) {
@@ -21,31 +41,99 @@ function selectButton(selectedId) {
 
 function hinzufuegen() {
     var selectedButtons = document.querySelectorAll('.selected');
-    var selectedButtonsText = [];
-    var amount, unit, person;
+    var mhdDelay, mhdUnit, personName;
+
+    if (selectedButtons.length < 2) {
+        setStatusMessage("Please select a person and a best before date.");
+        return;
+    }
 
     selectedButtons.forEach(button => {
         if (button.classList.contains('btn-mhd')) {
-            unit = getUnitSelectedButton(button.id);
-            amount = getAmountSelectedButton(button.id);
+            mhdUnit = getUnitSelectedButton(button.id);
+            mhdDelay = getAmountSelectedButton(button.id);
         } else if (button.classList.contains('btn-pers')) {
-            person = button.innerText;
+            personName = button.innerText;
         }
     });
+    
+    // implement the fetch request to add the item to the database HERE
+    // use personName, mdhDelay (Anzahl an Tagen/Wochen/Monaten) and mhdUnit (Tag/Woche/Monat).
+    // Den Name vom Produkt bekommst du über openapi.process_image("thecoolvision/app/temp/image.jpg") in der main.py Datei.
+    // Dann musst du noch in deiner Funktion das Datum berechnen, geht bestimmt mit einem Modul in python, frag am besten ChatGPT.
+    
 
-    console.log(amount, unit, person);
+    // Implementierung
 }
 
 function abbrechen() {
     document.querySelectorAll('.selected').forEach(button => {
         button.classList.remove('selected');
     });
+    video.play();
+    takePhotoButton.innerHTML = "Take a photo 📸";
+}
+
+function entfernen(event) {
+    // Get all selected buttons
+    var selectedButtons = document.querySelectorAll('.selected');
+    
+    // Find a selected person button
+    var personButton = Array.from(selectedButtons).find(button => button.classList.contains('btn-pers'));
+    
+    // Check if a person button is selected
+    if (!personButton) {
+        setStatusMessage("Please select a person to remove inventory from.");
+        return;
+    }
+
+    toggleModal(event);
+    console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
+
+    // make request to get item by id and add content to table with persons-items id, item-name
+    fetch(`/users/${personUsername}/stock`, {
+        method: 'GET',
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            // console.log(data);            
+            // insert array values into table with id <table id="persons-items">
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                const cell1 = row.insertCell(0);
+                const cell2 = row.insertCell(1);
+                const cell3 = row.insertCell(2);
+                const cell4 = row.insertCell(3);
+                cell1.innerHTML = item.id;
+                cell2.innerHTML = item.product.name;
+                cell3.innerHTML = item.amount;
+                cell4.innerHTML = `<a class="clickable-icon" onclick="deleteItem(event, ${item.id})"><i data-feather="trash-2"></i></a>`;
+            });
+            feather.replace();
+        }).catch((error) => console.error('Error:', error));
+}
+
+function deleteItem(event, itemId) {
+    event.preventDefault();
+    console.log("Delete Item with ID " + itemId);
+    fetch(`/items/${itemId}`, {
+        method: 'DELETE',
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            // remove row from table
+            const table = document.getElementById("persons-items");
+            const tbody = table.tBodies[0];
+            const row = document.getElementById(itemId);
+            tbody.removeChild(row);
+        }).catch((error) => console.error('Error:', error));
 }
 
 // Function to increase the amount
 function increase(buttonId) {
     const button = document.getElementById(buttonId);
-    if (! button.classList.contains('selected')) {
+    if (!button.classList.contains('selected')) {
         selectButton(buttonId);
     }
     const buttonTexts = button.innerText.split(' ')
@@ -58,7 +146,7 @@ function increase(buttonId) {
 // Function to decrease the amount
 function decrease(buttonId) {
     const button = document.getElementById(buttonId);
-    if (! button.classList.contains('selected')) {
+    if (!button.classList.contains('selected')) {
         selectButton(buttonId);
     }
     const buttonTexts = button.innerText.split(' ')
@@ -70,7 +158,7 @@ function decrease(buttonId) {
     checkGrammer(buttonId);
 }
 
-function checkGrammer(buttonID){
+function checkGrammer(buttonID) {
     var button = document.getElementById(buttonID);
     var buttonText = button.innerText;
     var buttonTexts = buttonText.split(' ');
@@ -110,12 +198,48 @@ function getUnitSelectedButton(buttonId) {
 }
 
 function takePhoto() {
+    let canvas = document.createElement('canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    let context = canvas.getContext('2d');
+    context.drawImage(video, 0, 0);
+    let imageDataUrl = canvas.toDataURL('image/jpeg');
+
+    // Convert the data URL to a Blob
+    let byteString = atob(imageDataUrl.split(',')[1]);
+    let mimeString = imageDataUrl.split(',')[0].split(':')[1].split(';')[0];
+    let arrayBuffer = new ArrayBuffer(byteString.length);
+    let uint8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+        uint8Array[i] = byteString.charCodeAt(i);
+    }
+    let blob = new Blob([uint8Array], { type: mimeString });
+
+    // Send the Blob to the server
+    let formData = new FormData();
+    formData.append('image', blob);
+    fetch('/process_image', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.text())
+        .then(data => console.log(data))
+        .catch(error => console.error('Error:', error));
+}
+
+function startPhotoProcess() {
     var overlay = document.querySelector(".countdown-overlay");
     var countdown = 3;
-    var countdownInterval = setInterval(function() {
+
+    video.play();
+    var countdownInterval = setInterval(function () {
         if (countdown === 0) {
             console.log("Take the photo!");
+            takePhoto();
+            // Stop the video
+            video.pause();
             overlay.innerText = "";
+            takePhotoButton.innerHTML = "Retake the photo 📸";
             clearInterval(countdownInterval);
         } else {
             overlay.innerText = countdown;
