@@ -55,7 +55,6 @@ def add_product_by_photo():
        #print(created_product_id)
        add_product(created_product_id)
 
-@app.route("/add_product_to_md", methods=["POST"])
 def add_product_to_md(name):
     name #= "New product xyx"
     description = ""
@@ -76,7 +75,6 @@ def add_product_to_md(name):
     #print(response.json())
     return response.json(), 200
 
-@app.route("/add_product", methods=["POST"])
 def add_product(product_id):
         product_id  # = 8
         amount = 1
