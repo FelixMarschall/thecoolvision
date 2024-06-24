@@ -38,7 +38,7 @@ def get_stock():
         return "No stock available", 404
     return stock, 200
 
-@app.route("add_product_by_photo" , methods=["POST"])
+@app.route("/add_product_by_photo" , methods=["POST"])
 def add_product_by_photo():
    #get products from master data
    masterdata = api.get("objects/products")
@@ -55,7 +55,7 @@ def add_product_by_photo():
        #print(created_product_id)
        add_product(created_product_id)
 
-@app.route("add_product_to_md", methods=["POST"])
+@app.route("/add_product_to_md", methods=["POST"])
 def add_product_to_md(name):
     name #= "New product xyx"
     description = ""
