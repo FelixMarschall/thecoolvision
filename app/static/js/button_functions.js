@@ -52,19 +52,135 @@ function hinzufuegen() {
         if (button.classList.contains('btn-mhd')) {
             mhdUnit = getUnitSelectedButton(button.id);
             mhdDelay = getAmountSelectedButton(button.id);
+
+        console.log(`mhdUnit: ${mhdUnit}, mhdDelay: ${mhdDelay}`); // Debugging line
+
         } else if (button.classList.contains('btn-pers')) {
             personName = button.innerText;
         }
-    });
+    });    
+        // Calculate best before date based on mhdUnit and mhdDelay
+        var bestBeforeDate = calculateBestBeforeDate(mhdDelay, mhdUnit);
+
+        console.log(`bestBeforeDate: ${bestBeforeDate}`); // Debugging line
+        
+        // Send data to backend
+        fetch('/add_product_by_photo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                personName: personName,
+                bestBeforeDate: bestBeforeDate
+            }),
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+    function calculateBestBeforeDate(mhdDelay, mhdUnit) {
+        const date = new Date();
+        mhdDelay = parseInt(mhdDelay, 10); // Ensure delay is an integer
     
+        switch (mhdUnit) {
+            case 'Tag':
+                date.setDate(date.getDate() + mhdDelay);
+                break;
+            case 'Tage':
+                date.setDate(date.getDate() + mhdDelay);
+                break;
+            case 'Woche':
+                date.setDate(date.getDate() + mhdDelay * 7);
+                break;
+            case 'Wochen':
+                date.setDate(date.getDate() + mhdDelay * 7);
+                break;
+            case 'Monat':
+                date.setMonth(date.getMonth() + mhdDelay);
+                break;    
+            case 'Monate':
+                date.setMonth(date.getMonth() + mhdDelay);
+                break;
+            default:
+                throw new Error('Invalid unit provided. Use "days", "weeks", or "months".');
+        }
+    
+        // Format the date to YYYY-MM-DD
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is 2 digits
+        const day = date.getDate().toString().padStart(2, '0'); // Ensure day is 2 digits
+    
+        return `${year}-${month}-${day}`;
+    }
+    // function calculateBestBeforeDate(delay, unit) {
+    //     var date = new Date();
+    //     if (unit === 'days') {
+    //         date.setDate(date.getDate() + parseInt(delay));
+    //     } else if (unit === 'weeks') {
+    //         date.setDate(date.getDate() + parseInt(delay) * 7); 
+    //     } else if (unit === 'months') {
+    //         date.setMonth(date.getMonth() + parseInt(delay));
+    //     }
+    //     return date.toISOString().split('T')[0]; // Return date in YYYY-MM-DD format
+    // }
     // implement the fetch request to add the item to the database HERE
     // use personName, mdhDelay (Anzahl an Tagen/Wochen/Monaten) and mhdUnit (Tag/Woche/Monat).
     // Den Name vom Produkt bekommst du über openapi.process_image("thecoolvision/app/temp/image.jpg") in der main.py Datei.
     // Dann musst du noch in deiner Funktion das Datum berechnen, geht bestimmt mit einem Modul in python, frag am besten ChatGPT.
     
+// // Function to call add_product_by_photo endpoint
+// function addProductByPhoto() {
+//     // Assuming you need to send some data, adjust as necessary
+//     const formData = new FormData();
+//     formData.append('photo', /* Assuming you have a file input for the product photo */);
 
-    // Implementierung
-}
+//     fetch('/add_product_by_photo', {
+//         method: 'POST',
+//         body: formData
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log('Success:', data);
+//         // Handle success, update UI accordingly
+//     })
+//     .catch((error) => {
+//         console.error('Error:', error);
+//     });
+// }
+
+// // Function to call add_product_to_md endpoint
+// function addProductToMd(productName) {
+//     // Prepare the data to send
+//     const data = { name: productName };
+
+//     fetch('/add_product_to_md', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify(data)
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         console.log('Success:', data);
+//         // Handle success, update UI accordingly
+//     })
+//     .catch((error) => {
+//         console.error('Error:', error);
+//     });
+// }
+
+// // Example of attaching these functions to button clicks
+// document.getElementById('addProductByPhotoButton').addEventListener('click', addProductByPhoto);
+// document.getElementById('addProductToMdButton').addEventListener('click', () => addProductToMd('ExampleProductName'));
+ 
+// Implementierung
+
 
 function abbrechen() {
     document.querySelectorAll('.selected').forEach(button => {
