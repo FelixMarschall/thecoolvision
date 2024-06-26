@@ -117,63 +117,6 @@ function hinzufuegen() {
     
         return `${year}-${month}-${day}`;
     }
-    // function calculateBestBeforeDate(delay, unit) {
-    //     var date = new Date();
-    //     if (unit === 'days') {
-    //         date.setDate(date.getDate() + parseInt(delay));
-    //     } else if (unit === 'weeks') {
-    //         date.setDate(date.getDate() + parseInt(delay) * 7); 
-    //     } else if (unit === 'months') {
-    //         date.setMonth(date.getMonth() + parseInt(delay));
-    //     }
-    //     return date.toISOString().split('T')[0]; // Return date in YYYY-MM-DD format
-    // }
-    // implement the fetch request to add the item to the database HERE
-    // use personName, mdhDelay (Anzahl an Tagen/Wochen/Monaten) and mhdUnit (Tag/Woche/Monat).
-    // Den Name vom Produkt bekommst du über openapi.process_image("thecoolvision/app/temp/image.jpg") in der main.py Datei.
-    // Dann musst du noch in deiner Funktion das Datum berechnen, geht bestimmt mit einem Modul in python, frag am besten ChatGPT.
-    
-// // Function to call add_product_by_photo endpoint
-// function addProductByPhoto() {
-//     // Assuming you need to send some data, adjust as necessary
-//     const formData = new FormData();
-//     formData.append('photo', /* Assuming you have a file input for the product photo */);
-
-//     fetch('/add_product_by_photo', {
-//         method: 'POST',
-//         body: formData
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         console.log('Success:', data);
-//         // Handle success, update UI accordingly
-//     })
-//     .catch((error) => {
-//         console.error('Error:', error);
-//     });
-// }
-
-// // Function to call add_product_to_md endpoint
-// function addProductToMd(productName) {
-//     // Prepare the data to send
-//     const data = { name: productName };
-
-//     fetch('/add_product_to_md', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify(data)
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         console.log('Success:', data);
-//         // Handle success, update UI accordingly
-//     })
-//     .catch((error) => {
-//         console.error('Error:', error);
-//     });
-// }
 
 // // Example of attaching these functions to button clicks
 // document.getElementById('addProductByPhotoButton').addEventListener('click', addProductByPhoto);
