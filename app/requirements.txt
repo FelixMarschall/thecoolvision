@@ -1,2 +1,6 @@
 Flask==3.0.3
+openai==1.35.7
+pygrocy==2.1.0
+PyYAML==6.0.1
+PyYAML==6.0.1
 Requests==2.32.3
