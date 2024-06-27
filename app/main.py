@@ -11,7 +11,7 @@ from grocy_api import GrocyAPI
 logging.basicConfig(level=logging.DEBUG)
 
 # Load configuration from YAML file
-with open('config.yml', 'r') as file:
+with open('app/config.yaml', 'r') as file:
     config = yaml.safe_load(file)
 
 api = GrocyAPI(config['grocy']['api_url'], config['grocy']['api_key'])
