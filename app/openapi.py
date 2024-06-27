@@ -40,7 +40,7 @@ class OpenAIWrapper:
             "max_tokens": 300
         }
 
-    def process_image(self, image_path):
+    def process_image(self, image_path) -> str:
         base64_image = self.encode_image(image_path)
         payload = self.get_payload(base64_image)
         response = requests.post(

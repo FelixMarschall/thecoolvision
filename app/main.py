@@ -18,12 +18,14 @@ if os.path.isfile("/data/options.json"):
         grocy_key = options_config['grocy_api_key']
         grocy_url = options_config['grocy_url']
         openai_key = options_config['openai_api_key']
-else:
+elif os.path.isfile("app/config.yaml"):
     with open('app/config.yaml', 'r') as file:
         config = yaml.safe_load(file)
         grocy_key = config['grocy']['api_key']
         grocy_url = config['grocy']['api_url']
         openai_key = config['openai']['api_key']
+else:
+    logging.error("No configuration file found")
 
 api = GrocyAPI(grocy_url, grocy_key)
 openapi = OpenAIWrapper(openai_key)
