@@ -4,18 +4,29 @@ from flask import Flask, render_template, request, jsonify
 import logging
 import requests
 import yaml
+import os
+import json
 
 from openapi import OpenAIWrapper
 from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
-# Load configuration from YAML file
-with open('app/config.yaml', 'r') as file:
-    config = yaml.safe_load(file)
+if os.path.isfile("/data/options.json"):
+    with open('/data/options.json', "r") as json_file:
+        options_config = json.load(json_file)
+        grocy_key = options_config['grocy_api_key']
+        grocy_url = options_config['grocy_url']
+        openai_key = options_config['openai_api_key']
+else:
+    with open('app/config.yaml', 'r') as file:
+        config = yaml.safe_load(file)
+        grocy_key = config['grocy']['api_key']
+        grocy_url = config['grocy']['api_url']
+        openai_key = config['openai']['api_key']
 
-api = GrocyAPI(config['grocy']['api_url'], config['grocy']['api_key'])
-openapi = OpenAIWrapper(config['openai']['api_key'])
+api = GrocyAPI(grocy_url, grocy_key)
+openapi = OpenAIWrapper(openai_key)
 
 
 # print(openapi.process_image("app/test/burger.jpeg"))
