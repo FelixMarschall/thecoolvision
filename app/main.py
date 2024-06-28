@@ -12,18 +12,21 @@ from grocy_api import GrocyAPI
 
 logging.basicConfig(level=logging.DEBUG)
 
-if os.path.isfile("/data/options.json"):
-    with open('/data/options.json', "r") as json_file:
-        options_config = json.load(json_file)
-        grocy_key = options_config['grocy_api_key']
-        grocy_url = options_config['grocy_url']
-        openai_key = options_config['openai_api_key']
-elif os.path.isfile("app/config.yaml"):
+if os.path.isfile("app/config.yaml"):
     with open('app/config.yaml', 'r') as file:
+        logging.info("Reading yml configuration file")
         config = yaml.safe_load(file)
         grocy_key = config['grocy']['api_key']
         grocy_url = config['grocy']['api_url']
         openai_key = config['openai']['api_key']
+
+    if os.path.isfile("/data/options.json") and not grocy_key == "" and not openai_key == "":
+        with open('/data/options.json', "r") as json_file:
+            logging.info("Reading HomeAssistant json configuration file")
+            options_config = json.load(json_file)
+            grocy_key = options_config['grocy_api_key']
+            grocy_url = options_config['grocy_url']
+            openai_key = options_config['openai_api_key']
 else:
     logging.error("No configuration file found")
 
