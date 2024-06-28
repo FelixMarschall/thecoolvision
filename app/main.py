@@ -3,6 +3,9 @@ from flask import Flask, render_template, request, jsonify
 
 import logging
 import requests
+import yaml
+import os
+import json
 
 from openapi import OpenAIWrapper
 from grocy_api import GrocyAPI
@@ -11,8 +14,26 @@ from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.DEBUG)
 
-api = GrocyAPI('https://grocy.softghost.dev/api/', 'My6mrvmlS75bzb7WPKE6YIFly4ZM3xILaqXY5DP0pzMwqdTRd3')
-openapi = OpenAIWrapper('sk-proj-W2nhu2vyRecVfoAoz8QwT3BlbkFJuppyCRB2v6cZdSi9MZ56')
+if os.path.isfile("app/config.yaml"):
+    with open('app/config.yaml', 'r') as file:
+        logging.info("Reading yml configuration file")
+        config = yaml.safe_load(file)
+        grocy_key = config['grocy']['api_key']
+        grocy_url = config['grocy']['api_url']
+        openai_key = config['openai']['api_key']
+
+    if os.path.isfile("/data/options.json") and not grocy_key == "" and not openai_key == "":
+        with open('/data/options.json', "r") as json_file:
+            logging.info("Using HomeAssistant json configuration file")
+            options_config = json.load(json_file)
+            grocy_key = options_config['grocy_api_key']
+            grocy_url = options_config['grocy_url']
+            openai_key = options_config['openai_api_key']
+else:
+    logging.error("No configuration file found")
+
+api = GrocyAPI(grocy_url, grocy_key)
+openapi = OpenAIWrapper(openai_key)
 
 
 # print(openapi.process_image("app/test/burger.jpeg"))
@@ -21,8 +42,6 @@ log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Frontend Routes
-
-
 @app.route("/")
 def index():
     users = api.get("users")
@@ -40,8 +59,7 @@ def get_stock():
         return "No stock available", 404
     return stock, 200
 
-
-@app.route("/add_product_by_photo", methods=["POST"])
+@app.route("/add_product_by_photo" , methods=["POST"])
 def add_product_by_photo():
     data = request.json
     personName = data.get('personName')
@@ -261,6 +279,8 @@ def list_products_for_user():
     #     #print(product['product']['name'])
     
 
+    return jsonify(found_products), 200
+
 
 @app.route("/process_image", methods=["POST"])
 def process_image():
@@ -268,7 +288,7 @@ def process_image():
         logging.error("No image file in request")
         return "No image file in request", 400
     file = request.files["image"]
-    file.save("thecoolvision/app/temp/image.jpg")
+    file.save("app/temp/image.jpg")
     return "Image data processed successfully", 200
 
 @app.route("/users", methods=["GET"])
