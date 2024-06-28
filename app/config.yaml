@@ -1,6 +1,0 @@
-openai:
-  api_key: ''
-
-grocy:
-  api_url: 'https://grocy.softghost.dev/api/'
-  api_key: ''
