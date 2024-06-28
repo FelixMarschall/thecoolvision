@@ -65,8 +65,8 @@ def add_product_by_photo():
     personName = data.get('personName')
     bestBeforeDate = data.get('bestBeforeDate')
     masterdata = api.get("objects/products")
-    #generated_name = openapi.process_image("app/temp/image.jpg")
-    generated_name = "PetersErbsen"
+    generated_name = openapi.process_image("app/temp/image.jpg")
+    #generated_name = "PetersErbsen"
 
     for product in masterdata:
         if product['name'] == generated_name:
@@ -174,7 +174,7 @@ def remove_product():
 #     return jsonify({"error": "No product found for the user"}), 404
 ##################### remove function with user/note check #####################
 
-##################### remove function for userfield #####################
+##################### remove function for userfield (unfinished) #####################
 # @app.route("/list_products_for_user", methods=["GET"])
 # def list_products_for_user():
 #     # get stock
@@ -212,7 +212,7 @@ def remove_product():
 #         # here instead of printing the product ids need to be displayed
 #         # print(product['product']['name'])
 #     return found_products, 200
-##################### remove function for userfield #####################
+##################### remove function for userfield (unfinished) #####################
 
 
 @app.route("/list_products_for_user", methods=["GET"])
