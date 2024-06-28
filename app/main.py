@@ -174,7 +174,7 @@ def process_image():
         logging.error("No image file in request")
         return "No image file in request", 400
     file = request.files["image"]
-    file.save("thecoolvision/app/temp/image.jpg")
+    file.save("app/temp/image.jpg")
     return "Image data processed successfully", 200
 
 @app.route("/users", methods=["GET"])

@@ -91,7 +91,7 @@ function entfernen(event) {
     console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
 
     // make request to get item by id and add content to table with persons-items id, item-name
-    fetch(`/user/${personUsername}/products`, {
+    fetch(`/users/${personUsername}/stock`, {
         method: 'GET',
     })
         .then((response) => response.json())
@@ -116,7 +116,7 @@ function entfernen(event) {
 function deleteItem(event, itemId) {
     event.preventDefault();
     console.log("Delete Item with ID " + itemId);
-    fetch(`/remove_product/${itemId}`, {
+    fetch(`/items/${itemId}`, {
         method: 'DELETE',
     })
         .then((response) => response.json())
