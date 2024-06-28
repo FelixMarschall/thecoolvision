@@ -22,7 +22,7 @@ if os.path.isfile("app/config.yaml"):
 
     if os.path.isfile("/data/options.json") and not grocy_key == "" and not openai_key == "":
         with open('/data/options.json', "r") as json_file:
-            logging.info("Reading HomeAssistant json configuration file")
+            logging.info("Using HomeAssistant json configuration file")
             options_config = json.load(json_file)
             grocy_key = options_config['grocy_api_key']
             grocy_url = options_config['grocy_url']
@@ -40,8 +40,6 @@ log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Frontend Routes
-
-
 @app.route("/")
 def index():
     users = api.get("users")
@@ -76,7 +74,7 @@ def add_product_by_photo():
        #print(created_product_id)
        add_product(created_product_id)
 
-def add_product_to_md(name):
+def add_product_to_md(name: str):
     name #= "New product xyx"
     description = ""
     location_id = 2
@@ -96,7 +94,7 @@ def add_product_to_md(name):
     #print(response.json())
     return response.json(), 200
 
-def add_product(product_id):
+def add_product(product_id: int):
         product_id  # = 8
         amount = 1
         price = 1
@@ -116,25 +114,25 @@ def add_product(product_id):
         #print(response.status_code, response.text)
         return response.json, 200
 
-@app.route("/remove_product", methods=["POST"])
-def remove_product():
-    with app.app_context():
-        product_id = request.form.get('product_id')
-        amount = 1
-        spoiled = False
+@app.route("/remove_product/<product_id>", methods=["DELETE"])
+def remove_product(product_id: int):
+    # product_id = request.form.get('product_id')
+    amount = 1
+    spoiled = False
 
-        data = {
-            "amount": amount,
-            "spoiled": spoiled
-        }
+    data = {
+        "amount": amount,
+        "spoiled": spoiled
+    }
 
-        response = api.post(f'stock/products/{product_id}/consume', data)
-        return response.json, 200
-
+    response = api.post(f'stock/products/{product_id}/consume', data)
+    return response.json, 200
 
 
-@app.route("/list_products_for_user", methods=["GET"])
-def list_products_for_user():
+
+@app.route("/user/<username>/products", methods=["GET"])
+def list_products_for_user(username: str):
+    logging.info(f"Listing products for user {username}")
     # get stock
     stock = api.get("stock")
     list_of_entries = []
@@ -166,6 +164,8 @@ def list_products_for_user():
         product = api.get(f"stock/products/{product_id}")
         # here instead of printing the product ids need to be displayed
         # print(product['product']['name'])
+
+    return jsonify(found_products), 200
 
 
 @app.route("/process_image", methods=["POST"])
