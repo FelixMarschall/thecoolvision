@@ -171,3 +171,4 @@ cython_debug/
 *.avi
 *.webm
 app/config.yaml
+app/config.yml
