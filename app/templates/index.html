@@ -152,15 +152,10 @@
                 <h3>Was soll entfernt werden?</h3>
             </header>
             <p>
-                <!-- list all Items here -->
-                {% for item in products %}
-            <div class="row content-row">
-                <img src="" alt="Profile Picture">
-                <div class="text">{{ item[0] }}</div>
-                <img src="" alt="Trash Icon" class="trash-icon
-                    " onclick="deleteRow(this)">
-            </div>
-            {% endfor %}
+                <!-- Dynamic product list insertion point -->
+                <div id="productList">
+                    <!-- Product buttons will be dynamically inserted here -->
+                </div>
             </p>
             <footer>
                 <a href="#cancel" role="button" class="secondary" data-target="modal-remove-item"
@@ -175,6 +170,7 @@
         </article>
     </dialog>
     <!-- ./ Modal remove item -->
+
     <script>
 
     </script>

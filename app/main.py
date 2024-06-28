@@ -47,8 +47,8 @@ def add_product_by_photo():
     personName = data.get('personName')
     bestBeforeDate = data.get('bestBeforeDate')
     masterdata = api.get("objects/products")
-    generated_name = openapi.process_image("app/temp/image.jpg")
-    #generated_name = "Tomate"
+    #generated_name = openapi.process_image("app/temp/image.jpg")
+    generated_name = "PetersErbsen"
 
     for product in masterdata:
         if product['name'] == generated_name:
@@ -87,82 +87,88 @@ def add_product(product_id, bestBeforeDate, personName):
         transaction_type = "purchase"
         best_before_date = bestBeforeDate
         person = personName
-        
+
         data = {
             "amount": amount,
             "best_before_date": best_before_date,
             "transaction_type": transaction_type,
             "price": price,
-            #"note": personName,
-            "userfield": 
-            { "person": person },# ToDO: wird userfield so richtig übergeben?
+            "note": personName,
+            # "userfield": 
+            # { "person": person },# ToDO: wird userfield so richtig übergeben?
         }
 
         response = api.post(f'stock/products/{product_id}/add', data)
         #print(response.status_code, response.text)
         return response.json, 200
 
-@app.route("/remove_product", methods=["POST"])
+############# this remove function is working #############  
+@app.route('/remove_product', methods=['POST'])
 def remove_product():
-    with app.app_context():
-        product_id = request.form.get('product_id')
-        amount = 1
-        spoiled = False
+    data = request.json
+    product_id = int(data.get('productId'))
+    #product_id = request.form.get('productIdToRemoveInt')
+    #product_id_int = int(product_id)
+    #product_id = int(request.form.get('productIdToRemoveInt'))
+    # try:
+    #     product_id = int(request.form.get('productIdToRemove'))  
+    # except (ValueError, TypeError):
+    #     return jsonify({"error": "product_id invalid"}), 400
+    
+    amount = 1
+    spoiled = False
 
-        data = {
-            "amount": amount,
-            "spoiled": spoiled
-        }
+    data = {
+        "amount": amount,
+        "spoiled": spoiled
+    }
 
-        response = api.post(f'stock/products/{product_id}/consume', data)
-        return response.json, 200
+    response = api.post(f'stock/products/{product_id}/consume', data)
+    return response.json(), 200
 
-@app.route("/list_products_for_user", methods=["GET"])
-def list_products_for_user():
-    # get stock
-    stock = api.get("stock")
-    list_of_products = []
-    # iterate over stock
-    for product in stock:
-        # get each userfield in stock
-        person = product["userfields"]
-        list_of_products.append([])
 
-        
-        # get all entries for each product id
-        entries = api.get(f"stock/products/{product_id}/entries")
-        # iterate over all entries for a given product
-        for entry in entries:
-            # create list with product_id and the according user name
-            list_of_entries.append([entry['product_id'], entry['note']])
+##################### remove function with user/note check #####################
+# def remove_product():
+#     data = request.json
+#     user_name = data.get('userName')  # Assuming the user's name is passed in the request
+#     product_id = int(data.get('productId'))
 
-    found_products = []
-    ###################################
-    #user = 'Peter'  # user name from UI needs to be implemented
-    user = request.form.get('PersonName')
-    ###################################
+#     # Step 1: Fetch all products with the given product ID
+#     products = api.get(f'stock/products/{product_id}/entries')
 
-    # iterate trough all entries to find 
-    for entry in list_of_products:
-        # if note (user name) is equal to the wanted user, the product ids are appended
-        if entry[1] == user:
-            found_products.append(entry[0])
+#     # Step 2: Iterate over the products
+#     for product in products:
+#         # Step 3: Check if the product belongs to the user
+#         if 'note' in product and product['note'] == user_name:
+#             # Found the product belonging to the user; proceed with removal
+#             amount = 1
+#             spoiled = False
+#             data = {
+#                 "amount": amount,
+#                 "spoiled": spoiled
+#             }
+#             # Here we are assuming each product has a unique identifier within the list of products with the same ID
+#             # This is necceassary to identify the specific product to remove
+#             response = api.post(f'stock/products/{product["unique_identifier"]}/consume', data)
+#             return response.json(), 200
 
-    #print details for products (not essential)
-    for product_id in found_products:
-        product = api.get(f"stock/products/{product_id}")
-        # here instead of printing the product ids need to be displayed
-        # print(product['product']['name'])
+#     # If no product belonging to the user was found
+#     return jsonify({"error": "No product found for the user"}), 404
+##################### remove function with user/note check #####################
 
+##################### remove function for userfield #####################
 # @app.route("/list_products_for_user", methods=["GET"])
 # def list_products_for_user():
 #     # get stock
 #     stock = api.get("stock")
-#     list_of_entries = []
+#     list_of_products = []
 #     # iterate over stock
 #     for product in stock:
-#         # get each product id in stock
-#         product_id = product['product_id']
+#         # get each userfield in stock
+#         person = product["userfields"]
+#         list_of_products.append([])
+
+        
 #         # get all entries for each product id
 #         entries = api.get(f"stock/products/{product_id}/entries")
 #         # iterate over all entries for a given product
@@ -177,7 +183,7 @@ def list_products_for_user():
 #     ###################################
 
 #     # iterate trough all entries to find 
-#     for entry in list_of_entries:
+#     for entry in list_of_products:
 #         # if note (user name) is equal to the wanted user, the product ids are appended
 #         if entry[1] == user:
 #             found_products.append(entry[0])
@@ -187,6 +193,73 @@ def list_products_for_user():
 #         product = api.get(f"stock/products/{product_id}")
 #         # here instead of printing the product ids need to be displayed
 #         # print(product['product']['name'])
+#     return found_products, 200
+##################### remove function for userfield #####################
+
+
+@app.route("/list_products_for_user", methods=["GET"])
+def list_products_for_user():
+    personName = request.args.get('personName')  # Get personName from query parameters
+    # get stock
+    stock = api.get("stock")
+    list_of_entries = []
+    # iterate over stock
+    for product in stock:
+        ###### # get each product name in stock
+        ###### product_name = product['product']['name']
+        # get each product id in stock
+        product_id = product['product_id']
+        # get all entries for each product id
+        entries = api.get(f"stock/products/{product_id}/entries")
+        # iterate over all entries for a given product
+        for entry in entries:
+            # create list with product_id and the according user name
+            list_of_entries.append([entry['product_id'], entry['note']])
+            # Store product ID, name, and the user note
+            # list_of_entries.append([entry['product_id'], product_name, entry['note']])
+
+    found_products = []
+    added_product_ids = set()  # Set to track added product IDs
+
+    user = personName
+    
+    # iterate through all entries to find the products for the user
+    for entry in list_of_entries:
+        # if note (user name) is equal to the wanted user, the product ids are appended
+        if entry[1] == user:
+            product_id = entry[0]
+             # Check if product_id is already added
+            if product_id not in added_product_ids:
+                # Fetch the product details to get the name
+                product_details = api.get(f"stock/products/{product_id}")
+                product_name = product_details['product']['name']
+                # Append both product ID and name to found_products
+                found_products.append({"id": product_id, "name": product_name})  # Adjusted to return a dictionary
+                added_product_ids.add(product_id)  # Mark this product_id as added
+
+    return found_products, 200
+    
+  
+    # for entry in list_of_entries:
+    #     # if entry[2] == user:  # Check the user note
+    #     if entry[1] == user:  # Check the user note
+    #         # Append product ID and name as a tuple or dict
+    #         found_products.append({'id': entry[0], 'name': entry[1]})
+
+    # # iterate trough all entries to find 
+    # for entry in list_of_entries:
+    #     # if note (user name) is equal to the wanted user, the product ids are appended
+    #     if entry[1] == user:
+    #         found_products.append(entry[0])
+
+    return found_products, 200
+
+    # #print details for products (not essential)
+    # for product_id in found_products:
+    #     product = api.get(f"stock/products/{product_id}")
+    #     # here instead of printing the product ids need to be displayed
+    #     #print(product['product']['name'])
+    
 
 
 @app.route("/process_image", methods=["POST"])

@@ -118,6 +118,62 @@ function hinzufuegen() {
         return `${year}-${month}-${day}`;
     }
 
+////////////////////////////////////////////////////////////////////////////
+// Test function for removing a product by returning a list to the user
+////////////////////////////////////////////////////////////////////////////
+
+// function entfernen() {
+//     var selectedButtons = document.querySelectorAll('.selected');
+//     var personName;
+
+//     if (selectedButtons.length < 1) {
+//         setStatusMessage("Please select a person.");
+//         return;
+//     }
+
+//     selectedButtons.forEach(button => {
+//         if (button.classList.contains('btn-pers')) {
+//             personName = button.innerText;
+//         }
+//     });
+
+//     // Request to list products for the selected user
+//     fetch('/list_products_for_user', {
+//         method: 'POST',
+//         headers: {
+//             'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({ personName: personName }),
+//     })
+//     .then(response => response.json())
+//     .then(data => {
+//         // Display products in a popup and let the user select one to remove
+//         const productIdToRemove = displayProductsAndSelect(data); // Implement this function based on your UI framework
+
+//         // Request to remove the selected product
+//         fetch('/remove_product', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//             },
+//             body: JSON.stringify({ productId: productIdToRemove }),
+//         })
+//         .then(response => response.json())
+//         .then(data => {
+//             console.log('Product removed successfully:', data);
+//         })
+//         .catch((error) => {
+//             console.error('Error removing product:', error);
+//         });
+//     })
+//     .catch((error) => {
+//         console.error('Error listing products:', error);
+//     });
+// }
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+
+
 // // Example of attaching these functions to button clicks
 // document.getElementById('addProductByPhotoButton').addEventListener('click', addProductByPhoto);
 // document.getElementById('addProductToMdButton').addEventListener('click', () => addProductToMd('ExampleProductName'));
@@ -133,6 +189,7 @@ function abbrechen() {
     takePhotoButton.innerHTML = "Take a photo 📸";
 }
 
+// Test der funktion entfernen(die hier funktioniert)
 function entfernen(event) {
     // Get all selected buttons
     var selectedButtons = document.querySelectorAll('.selected');
@@ -145,33 +202,175 @@ function entfernen(event) {
         setStatusMessage("Please select a person to remove inventory from.");
         return;
     }
-
+    var personName; // Declare the personName variable
+    selectedButtons.forEach(button => {
+        if (button.classList.contains('btn-pers')) {
+            personName = button.innerText;
+        }
+    });
     toggleModal(event);
-    console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
+    // wurde auskommentiert, da Fehler in der Konsole :ReferenceError: user_id is not defined
+    // console.log("Trigger Entfernen with PersonId " + user_id, " PersonDisplayName " + personDisplayName);
 
-    // make request to get item by id and add content to table with persons-items id, item-name
-    fetch(`/users/${personUsername}/stock`, {
-        method: 'GET',
+    
+    // Encode the personName to ensure it's safe to include in a URL
+const params = new URLSearchParams({ personName: personName }).toString();
+const url = `/list_products_for_user?${params}`;
+
+// Fetch products for the selected user
+fetch(url, {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json',
+    },
+})
+    .then(response => {
+        // Check if the response is OK and the content type is JSON
+        if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
+            return response.json(); // Parse as JSON if the response is JSON
+        } else {
+            return response.text(); // Otherwise, return as text
+        }
     })
-        .then((response) => response.json())
-        .then((data) => {
-            // console.log(data);            
-            // insert array values into table with id <table id="persons-items">
-            data.forEach(item => {
-                const row = tbody.insertRow();
-                const cell1 = row.insertCell(0);
-                const cell2 = row.insertCell(1);
-                const cell3 = row.insertCell(2);
-                const cell4 = row.insertCell(3);
-                cell1.innerHTML = item.id;
-                cell2.innerHTML = item.product.name;
-                cell3.innerHTML = item.amount;
-                cell4.innerHTML = `<a class="clickable-icon" onclick="deleteItem(event, ${item.id})"><i data-feather="trash-2"></i></a>`;
-            });
-            feather.replace();
-        }).catch((error) => console.error('Error:', error));
+    .then(async data => {  // Use async to await the displayProductsAndSelect function
+        console.log("Received product list:", data); // Log the list received from the backend
+
+        // toggleModal(event);
+
+        // Display products in a modal popup and let the user select one to remove
+        // Wait for the promise to resolve and get the selected product ID
+        const productIdToRemove = await displayProductsAndSelect(data); 
+        console.log("Selected Product ID:", productIdToRemove); // Log the selected product ID
+        if (!productIdToRemove) {
+            console.log("No product selected for removal.");
+            return;
+        }
+        // const productIdToRemoveInt = parseInt(productIdToRemove, 10); // Ensure the ID is an integer
+        // Request to remove the selected product
+        fetch('/remove_product', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ productId: productIdToRemove }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Network response was not ok, status: ${response.status}`);
+            }
+            const contentType = response.headers.get('Content-Type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new Error('Received non-JSON response from server');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Product removed successfully:', data);
+            // Optionally, update the UI to reflect the removal
+        })
+        .catch((error) => {
+            console.error('Error removing product:', error);
+        });
+    })
+    .catch((error) => {
+        console.error('Error fetching products:', error);
+    });
+}
+// Display Products and Select
+function displayProductsAndSelect(products) {
+    console.log(products);
+    console.log(typeof products); // Check the type
+    if (Array.isArray(products)) {
+        products.forEach(product => {
+        console.log(`Product name: ${product.name}`);
+        });
+    } else {
+        console.log('products is not an array:', products);
+    }
+    return new Promise((resolve, reject) => {
+        const productListElement = document.getElementById('productList');
+        console.log(productListElement);
+        if (productListElement) {
+            // Element exists, safe to manipulate it
+        } else {
+            console.error('productList element not found');
+        }
+        
+        // Step 2: Check if the element exists
+        if (productListElement) {
+            // The element exists, you can safely manipulate it here
+            console.log('Element exists:', productListElement);
+        } else {
+            // The element does not exist, handle accordingly
+            console.error('Element with ID productList does not exist in the document.');
+        }
+        productListElement.innerHTML = ''; // Clear previous content
+
+        products.forEach(product => {
+            const productElement = document.createElement('button');
+            productElement.textContent = product.name;
+            productElement.classList.add('product-option');
+            productElement.onclick = () => {
+                resolve(product.id); // Resolve the promise with the selected product ID
+                // closeModal(document.getElementById('productSelectModal'));
+                closeModal(document.getElementById('modal-remove-item')); 
+            };
+            productListElement.appendChild(productElement);
+        });
+
+        // openModal(document.getElementById('productSelectModal'));
+        openModal(document.getElementById('modal-remove-item')); 
+    });
 }
 
+
+
+// When you need to display the product selection modal
+// displayProductsAndSelect(products).then(selectedProductId => {
+//     console.log("Selected Product ID:", selectedProductId);
+// });
+   
+// function entfernen(event) {
+//     // Get all selected buttons
+//     var selectedButtons = document.querySelectorAll('.selected');
+    
+//     // Find a selected person button
+//     var personButton = Array.from(selectedButtons).find(button => button.classList.contains('btn-pers'));
+    
+//     // Check if a person button is selected
+//     if (!personButton) {
+//         setStatusMessage("Please select a person to remove inventory from.");
+//         return;
+//     }
+
+//     toggleModal(event);
+//     // console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
+
+//     // make request to get item by id and add content to table with persons-items id, item-name
+//     fetch(`/users/${personUsername}/stock`, {
+//         method: 'GET',
+//     })
+//         .then((response) => response.json())
+//         .then((data) => {
+//             // console.log(data);            
+//             // insert array values into table with id <table id="persons-items">
+//             data.forEach(item => {
+//                 const row = tbody.insertRow();
+//                 const cell1 = row.insertCell(0);
+//                 const cell2 = row.insertCell(1);
+//                 const cell3 = row.insertCell(2);
+//                 const cell4 = row.insertCell(3);
+//                 cell1.innerHTML = item.id;
+//                 cell2.innerHTML = item.product.name;
+//                 cell3.innerHTML = item.amount;
+//                 cell4.innerHTML = `<a class="clickable-icon" onclick="deleteItem(event, ${item.id})"><i data-feather="trash-2"></i></a>`;
+//             });
+//             feather.replace();
+//         }).catch((error) => {
+//             console.error('Error:', error);
+//             // Optionally, update the UI to inform the user that an error occurred
+//         });
+// }    
 function deleteItem(event, itemId) {
     event.preventDefault();
     console.log("Delete Item with ID " + itemId);
