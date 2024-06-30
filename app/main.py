@@ -2,7 +2,6 @@ from urllib.parse import urljoin
 from flask import Flask, render_template, request, jsonify
 
 import logging
-import requests
 import yaml
 import os
 import json
@@ -34,9 +33,6 @@ else:
 
 api = GrocyAPI(grocy_url, grocy_key)
 openapi = OpenAIWrapper(openai_key)
-
-
-# print(openapi.process_image("app/test/burger.jpeg"))
 
 log = logging.getLogger(__name__)
 app = Flask(__name__)
@@ -214,73 +210,29 @@ def remove_product():
 #     return found_products, 200
 ##################### remove function for userfield (unfinished) #####################
 
-
-@app.route("/list_products_for_user", methods=["GET"])
-def list_products_for_user():
-    personName = request.args.get('personName')  # Get personName from query parameters
-    # get stock
-    stock = api.get("stock")
+@app.route("/user/<personName>/products", methods=["GET"])
+def list_products_for_user(personName: str):
+    raw_stocks = api.get("objects/stock") # <-- has the note or person field
+    raw_products = api.get("objects/products")
+    
     list_of_entries = []
-    # iterate over stock
-    for product in stock:
-        ###### # get each product name in stock
-        ###### product_name = product['product']['name']
-        # get each product id in stock
-        product_id = product['product_id']
-        # get all entries for each product id
-        entries = api.get(f"stock/products/{product_id}/entries")
-        # iterate over all entries for a given product
-        for entry in entries:
-            # create list with product_id and the according user name
-            list_of_entries.append([entry['product_id'], entry['note']])
-            # Store product ID, name, and the user note
-            # list_of_entries.append([entry['product_id'], product_name, entry['note']])
+    for stock in raw_stocks:
+        list_of_entries.append((stock['product_id'], stock['note']))
 
+    # remove touple duplicates from list
+    list_of_entries = list(set(list_of_entries))
+
+    # only keep entries with the wanted user
+    list_of_entries = [entry for entry in list_of_entries if entry[1] == personName]
+    
     found_products = []
-    added_product_ids = set()  # Set to track added product IDs
 
-    user = personName
-    
-    # iterate through all entries to find the products for the user
     for entry in list_of_entries:
-        # if note (user name) is equal to the wanted user, the product ids are appended
-        if entry[1] == user:
-            product_id = entry[0]
-             # Check if product_id is already added
-            if product_id not in added_product_ids:
-                # Fetch the product details to get the name
-                product_details = api.get(f"stock/products/{product_id}")
-                product_name = product_details['product']['name']
-                # Append both product ID and name to found_products
-                found_products.append({"id": product_id, "name": product_name})  # Adjusted to return a dictionary
-                added_product_ids.add(product_id)  # Mark this product_id as added
+        for product in raw_products:
+            if entry[0] == product['id']:
+                found_products.append({"id": product['id'], "name": product['name']})
 
     return found_products, 200
-    
-  
-    # for entry in list_of_entries:
-    #     # if entry[2] == user:  # Check the user note
-    #     if entry[1] == user:  # Check the user note
-    #         # Append product ID and name as a tuple or dict
-    #         found_products.append({'id': entry[0], 'name': entry[1]})
-
-    # # iterate trough all entries to find 
-    # for entry in list_of_entries:
-    #     # if note (user name) is equal to the wanted user, the product ids are appended
-    #     if entry[1] == user:
-    #         found_products.append(entry[0])
-
-    return found_products, 200
-
-    # #print details for products (not essential)
-    # for product_id in found_products:
-    #     product = api.get(f"stock/products/{product_id}")
-    #     # here instead of printing the product ids need to be displayed
-    #     #print(product['product']['name'])
-    
-
-    return jsonify(found_products), 200
-
 
 @app.route("/process_image", methods=["POST"])
 def process_image():

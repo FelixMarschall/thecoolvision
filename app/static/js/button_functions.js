@@ -212,11 +212,7 @@ function entfernen(event) {
     // wurde auskommentiert, da Fehler in der Konsole :ReferenceError: user_id is not defined
     // console.log("Trigger Entfernen with PersonId " + user_id, " PersonDisplayName " + personDisplayName);
 
-    
-    // Encode the personName to ensure it's safe to include in a URL
-const params = new URLSearchParams({ personName: personName }).toString();
-const url = `/list_products_for_user?${params}`;
-
+const url= '/user/' + personName + '/products';
 // Fetch products for the selected user
 fetch(url, {
     method: 'GET',
