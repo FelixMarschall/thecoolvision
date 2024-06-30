@@ -1,6 +1,6 @@
 import base64
 import requests
-from openai import OpenAI
+
 
 # https://platform.openai.com/docs/guides/vision
 
@@ -26,7 +26,7 @@ class OpenAIWrapper:
                     "content": [
                         {
                             "type": "text",
-                            "text": "What Food is in this image? Write it as a single word, otherwise two words maximum."
+                            "text": "What Food is in this image? Write it as a single word, in german."
                         },
                         {
                             "type": "image_url",
