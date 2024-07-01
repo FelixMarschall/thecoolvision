@@ -78,16 +78,7 @@ function hinzufuegen() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            // Select the status message element
-            const statusMessage = document.getElementById('status-message');
-            // Update the message content
-            statusMessage.textContent = 'Product added successfully';
-            // Remove the 'hidden' attribute to show the message
-            statusMessage.removeAttribute('hidden');
-            // Optionally, hide the message after 3 seconds
-            setTimeout(() => {
-                statusMessage.setAttribute('hidden', '');
-            }, 3000);
+            setStatusMessage("Product added successfully.");
         })
         .catch((error) => {
             console.error('Error:', error);
