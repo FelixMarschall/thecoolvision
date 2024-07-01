@@ -253,3 +253,9 @@
     -moz-user-select: none; /* Firefox */
     -ms-user-select: none; /* Internet Explorer/Edge */
 }
+
+#productList button {
+    display: block; /* Make each button take the full width */
+    width: 100%; /* Ensure it uses all available space */
+    margin-bottom: 10px; /* Add some space between buttons */
+}
