@@ -302,7 +302,7 @@ function displayProductsAndSelect(products) {
         }
         productListElement.innerHTML = ''; // Clear previous content
 
-        //----------------------------------------------- Try new function for products and best before dates
+        // Show Products and Best Before Dates
 
         if (!products || !Array.isArray(products) || products.length === 0) {
             const noProductsParagraph = document.createElement('p');
@@ -373,27 +373,6 @@ function displayProductsAndSelect(products) {
                 details.appendChild(paragraph);
             }
         });
-
-        //method for rows with products and best before dates
-        //-----------------------------------------------
-        products.forEach(product => {
-            const productRow = document.createElement('tr');
-
-            productRow.onclick = () => {
-            resolve(product.id); // Resolve the promise with the selected product ID
-            // closeModal(document.getElementById('productSelectModal'));
-            closeModal(document.getElementById('modal-remove-item')); 
-            };
-            
-            
-            
-            const dateCell = document.createElement('td');
-            dateCell.textContent = product.name + " " + product.best_before_date;
-            productRow.appendChild(dateCell);
-            
-            productListElement.appendChild(productRow);
-        });
-        //-----------------------------------------------
 
         // openModal(document.getElementById('productSelectModal'));
         openModal(document.getElementById('modal-remove-item')); 
