@@ -288,9 +288,7 @@ function displayProductsAndSelect(products) {
     return new Promise((resolve, reject) => {
         const productListElement = document.getElementById('productList');
         console.log(productListElement);
-        if (productListElement) {
-            // Element exists, safe to manipulate it
-        } else {
+        if (!productListElement) {
             console.error('productList element not found');
         }
         
@@ -304,24 +302,115 @@ function displayProductsAndSelect(products) {
         }
         productListElement.innerHTML = ''; // Clear previous content
 
-        products.forEach(product => {
-            const productElement = document.createElement('button');
-            productElement.textContent = product.name + " " + product.best_before_date;
-            productElement.classList.add('product-option');
-            productElement.onclick = () => {
-                resolve(product.id); // Resolve the promise with the selected product ID
+        //----------------------------------------------- Try new function for products and best before dates
+
+        if (!products || !Array.isArray(products) || products.length === 0) {
+            const noProductsParagraph = document.createElement('p');
+            noProductsParagraph.textContent = 'There are no products for this user.';
+            productListElement.appendChild(noProductsParagraph);
+
+            console.log('No products found:', products);
+            return;
+        }
+
+        // Extract unique names
+        const uniqueProducts = [...new Set(products.map(product => product.name))];
+
+        // Iterate over unique product names
+        uniqueProducts.forEach(productName => {
+            productID = products.find(product => product.name === productName).id;
+
+            // Get bestBeforeDateCounts for the current productName
+            const bestBeforeDateCounts = getBestBeforeDateCounts(products, productName);
+
+            // Create fieldset element
+            const fieldset = document.createElement('fieldset');
+            fieldset.setAttribute('role', 'group');
+
+            // Create details element
+            const details = document.createElement('details');
+
+            // Create summary element
+            const productSummary = document.createElement('summary');
+            productSummary.setAttribute('role', 'button');
+            productSummary.classList.add('outline');
+            productSummary.textContent = productName;
+
+            // Append summary to details
+            details.appendChild(productSummary);
+
+            // Append details to fieldset
+            fieldset.appendChild(details);
+
+            // Create input element
+            const input = document.createElement('input');
+            input.setAttribute('type', 'submit');
+            input.setAttribute('value', 'Entfernen');
+
+            input.onclick = () => {
+                resolve(productID); // Resolve the promise with the selected product ID
                 // closeModal(document.getElementById('productSelectModal'));
                 closeModal(document.getElementById('modal-remove-item')); 
-            };
-            productListElement.appendChild(productElement);
+                };
+
+            // Append input to fieldset
+            fieldset.appendChild(input);
+
+            // Append fieldset to productListElement
+            productListElement.appendChild(fieldset);
+
+            // Add paragraph for each bestBeforeDate
+            const paragraph = document.createElement('p');
+                paragraph.textContent = `Best Before Dates for ${productName}`;
+                paragraph.style.textAlign = "center";
+                details.appendChild(paragraph);
+
+            // Add paragraph for each bestBeforeDate
+            for (const date in bestBeforeDateCounts) {
+                const paragraph = document.createElement('p');
+                paragraph.textContent = `${date}`;
+                paragraph.style.textAlign = "center";
+                details.appendChild(paragraph);
+            }
         });
+
+        //method for rows with products and best before dates
+        //-----------------------------------------------
+        products.forEach(product => {
+            const productRow = document.createElement('tr');
+
+            productRow.onclick = () => {
+            resolve(product.id); // Resolve the promise with the selected product ID
+            // closeModal(document.getElementById('productSelectModal'));
+            closeModal(document.getElementById('modal-remove-item')); 
+            };
+            
+            
+            
+            const dateCell = document.createElement('td');
+            dateCell.textContent = product.name + " " + product.best_before_date;
+            productRow.appendChild(dateCell);
+            
+            productListElement.appendChild(productRow);
+        });
+        //-----------------------------------------------
 
         // openModal(document.getElementById('productSelectModal'));
         openModal(document.getElementById('modal-remove-item')); 
     });
 }
 
-
+// Function to get best before date counts for a specific name
+function getBestBeforeDateCounts(products, product_name) {
+    const filteredList = products.filter(item => item.name === product_name);
+    return filteredList.reduce((acc, {best_before_date}) => {
+        if (!acc[best_before_date]) {
+            acc[best_before_date] = 0;
+        }
+        acc[best_before_date]++;
+        return acc;
+    }, {});
+}
 
 // When you need to display the product selection modal
 // displayProductsAndSelect(products).then(selectedProductId => {
