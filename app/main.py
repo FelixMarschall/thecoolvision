@@ -69,12 +69,11 @@ def add_product_by_photo():
             product_id = product['id']
             add_product(product_id, bestBeforeDate, personName) 
             return jsonify({"message": "Product added successfully", "product_id": product_id}), 200 # if function doesnt work, delete this line
-            break
     else:
         response, status = add_product_to_md(generated_name)  
         created_product_id = response['created_object_id']
         add_product(created_product_id, bestBeforeDate, personName)
-        return jsonify({"message": "Product added successfully", "product_id": product_id}), 200 # if function doesnt work, delete this line
+        return jsonify({"message": "Product added successfully", "product_id": created_product_id}), 200 # if function doesnt work, delete this line
 
 
 def add_product_to_md(name):
@@ -138,6 +137,9 @@ def remove_product():
     }
 
     response = api.post(f'stock/products/{product_id}/consume', data)
+
+    if response.status_code < 200 or response.status_code >= 300:
+        logging.info(f"Product with ID {product_id} could not be removed")
     return response.json(), 200
 
 
@@ -217,7 +219,7 @@ def list_products_for_user(personName: str):
     
     list_of_entries = []
     for stock in raw_stocks:
-        list_of_entries.append((stock['product_id'], stock['note']))
+        list_of_entries.append((stock['product_id'], stock['note'], stock['best_before_date']))
 
     # remove touple duplicates from list
     list_of_entries = list(set(list_of_entries))
@@ -230,8 +232,9 @@ def list_products_for_user(personName: str):
     for entry in list_of_entries:
         for product in raw_products:
             if entry[0] == product['id']:
-                found_products.append({"id": product['id'], "name": product['name']})
+                found_products.append({"id": product['id'], "name": product['name'], "best_before_date": entry[2]})
 
+    logging.debug(f"Found products for user {personName}: {found_products}")
     return found_products, 200
 
 @app.route("/process_image", methods=["POST"])
@@ -241,6 +244,7 @@ def process_image():
         return "No image file in request", 400
     file = request.files["image"]
     file.save("app/temp/image.jpg")
+    logging.info("Image saved successfully")
     return "Image data processed successfully", 200
 
 @app.route("/users", methods=["GET"])

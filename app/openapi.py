@@ -48,4 +48,5 @@ class OpenAIWrapper:
         
         if not 200 <= response.status_code <= 299:
             return logging.error(f"Error: {response.json()}")
+        logging.info("Food Object detected: " + response.json()['choices'][0]['message']['content'])
         return response.json()['choices'][0]['message']['content']
