@@ -1,6 +1,6 @@
 import base64
 import requests
-
+import logging
 
 # https://platform.openai.com/docs/guides/vision
 
@@ -45,4 +45,7 @@ class OpenAIWrapper:
         payload = self.get_payload(base64_image)
         response = requests.post(
             "https://api.openai.com/v1/chat/completions", headers=self.headers, json=payload)
+        
+        if not 200 <= response.status_code <= 299:
+            return logging.error(f"Error: {response.json()}")
         return response.json()['choices'][0]['message']['content']
