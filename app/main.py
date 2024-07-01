@@ -21,13 +21,13 @@ if os.path.isfile("app/config.yaml"):
         grocy_url = config['grocy']['api_url']
         openai_key = config['openai']['api_key']
 
-    if os.path.isfile("/data/options.json") and not grocy_key == "" and not openai_key == "":
-        with open('/data/options.json', "r") as json_file:
-            logging.info("Using HomeAssistant json configuration file")
-            options_config = json.load(json_file)
-            grocy_key = options_config['grocy_api_key']
-            grocy_url = options_config['grocy_url']
-            openai_key = options_config['openai_api_key']
+if os.path.isfile("/data/options.json") and not grocy_key == "" and not openai_key == "":
+    with open('/data/options.json', "r") as json_file:
+        logging.info("Using HomeAssistant json configuration file")
+        options_config = json.load(json_file)
+        grocy_key = options_config['grocy_api_key']
+        grocy_url = options_config['grocy_url']
+        openai_key = options_config['openai_api_key']
 else:
     logging.error("No configuration file found")
 
