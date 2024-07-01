@@ -79,11 +79,13 @@ function hinzufuegen() {
         .then(data => {
             console.log('Success:', data);
             setStatusMessage("Product added successfully.", 1);
+            abbrechen();
         })
         .catch((error) => {
             console.error('Error:', error);
         });
     }
+
     function calculateBestBeforeDate(mhdDelay, mhdUnit) {
         const date = new Date();
         mhdDelay = parseInt(mhdDelay, 10); // Ensure delay is an integer
