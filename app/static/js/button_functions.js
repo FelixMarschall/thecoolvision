@@ -213,14 +213,14 @@ function entfernen(event) {
     // wurde auskommentiert, da Fehler in der Konsole :ReferenceError: user_id is not defined
     // console.log("Trigger Entfernen with PersonId " + user_id, " PersonDisplayName " + personDisplayName);
 
-const url= '/user/' + personName + '/products';
-// Fetch products for the selected user
-fetch(url, {
-    method: 'GET',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-})
+    const url= '/user/' + personName + '/products';
+    // Fetch products for the selected user
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
     .then(response => {
         // Check if the response is OK and the content type is JSON
         if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
@@ -264,15 +264,7 @@ fetch(url, {
         .then(data => {
             console.log('Product removed successfully:', data);
             // Select the status message element
-            const statusMessage = document.getElementById('status-message');
-            // Update the message content
-            statusMessage.textContent = 'Product removed successfully';
-            // Remove the 'hidden' attribute to show the message
-            statusMessage.removeAttribute('hidden');
-            // Optionally, hide the message after 3 seconds
-            setTimeout(() => {
-                statusMessage.setAttribute('hidden', '');
-            }, 3000);
+            setStatusMessage("Product removed successfully.", 3);
         })
         .catch((error) => {
             console.error('Error removing product:', error);
