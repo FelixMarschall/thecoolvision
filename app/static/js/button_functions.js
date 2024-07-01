@@ -10,12 +10,12 @@ navigator.mediaDevices.getUserMedia({ video: true })
     })
     .catch(error => console.error('Error:', error));
 
-function setStatusMessage(statusMessageText) {
+function setStatusMessage(statusMessageText, time) {
     statusMessage.innerText = statusMessageText;
     statusMessage.hidden = false;
     setTimeout(() => {
         statusMessage.hidden = true;
-    }, 3000); // 3 seconds
+    }, 1000*time); // 3 seconds
 }
 
 function selectButton(selectedId) {
@@ -44,7 +44,7 @@ function hinzufuegen() {
     var mhdDelay, mhdUnit, personName;
 
     if (selectedButtons.length < 2) {
-        setStatusMessage("Please select a person and a best before date.");
+        setStatusMessage("Please select a person and a best before date.", 3);
         return;
     }
 
@@ -78,7 +78,7 @@ function hinzufuegen() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            setStatusMessage("Product added successfully.");
+            setStatusMessage("Product added successfully.", 1);
         })
         .catch((error) => {
             console.error('Error:', error);
@@ -128,7 +128,7 @@ function hinzufuegen() {
 //     var personName;
 
 //     if (selectedButtons.length < 1) {
-//         setStatusMessage("Please select a person.");
+//         setStatusMessage("Please select a person.", 3);
 //         return;
 //     }
 
@@ -200,7 +200,7 @@ function entfernen(event) {
     
     // Check if a person button is selected
     if (!personButton) {
-        setStatusMessage("Please select a person to remove inventory from.");
+        setStatusMessage("Please select a person to remove inventory from.", 3);
         return;
     }
     var personName; // Declare the personName variable
@@ -345,7 +345,7 @@ function displayProductsAndSelect(products) {
     
 //     // Check if a person button is selected
 //     if (!personButton) {
-//         setStatusMessage("Please select a person to remove inventory from.");
+//         setStatusMessage("Please select a person to remove inventory from.", 3);
 //         return;
 //     }
 
