@@ -264,7 +264,7 @@ function entfernen(event) {
         .then(data => {
             console.log('Product removed successfully:', data);
             // Select the status message element
-            setStatusMessage("Product removed successfully.", 3);
+            setStatusMessage("Product removed successfully.", 1);
         })
         .catch((error) => {
             console.error('Error removing product:', error);
@@ -306,7 +306,7 @@ function displayProductsAndSelect(products) {
 
         products.forEach(product => {
             const productElement = document.createElement('button');
-            productElement.textContent = product.name;
+            productElement.textContent = product.name + " " + product.best_before_date;
             productElement.classList.add('product-option');
             productElement.onclick = () => {
                 resolve(product.id); // Resolve the promise with the selected product ID
