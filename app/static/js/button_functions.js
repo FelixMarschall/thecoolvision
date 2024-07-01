@@ -509,5 +509,5 @@ function startPhotoProcess() {
             overlay.innerText = countdown;
             countdown--;
         }
-    }, 700);
+    }, 100);
 }
