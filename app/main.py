@@ -12,7 +12,9 @@ from grocy_api import GrocyAPI
 from datetime import datetime, timedelta
 
 logging.basicConfig(level=logging.DEBUG)
-
+grocy_url = None
+grocy_key = None
+openai_key = None
 if os.path.isfile("app/config.yaml"):
     with open('app/config.yaml', 'r') as file:
         logging.info("Reading yml configuration file")
