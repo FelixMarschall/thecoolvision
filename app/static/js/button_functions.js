@@ -46,6 +46,10 @@ function hinzufuegen() {
     if (selectedButtons.length < 2) {
         setStatusMessage("Please select a person and a best before date.", 3);
         return;
+    } 
+    if (!video.paused) {
+        setStatusMessage("Please take a photo of the item.", 3);
+        return;
     }
 
     selectedButtons.forEach(button => {
@@ -62,7 +66,7 @@ function hinzufuegen() {
         // Calculate best before date based on mhdUnit and mhdDelay
         var bestBeforeDate = calculateBestBeforeDate(mhdDelay, mhdUnit);
 
-        console.log(`bestBeforeDate: ${bestBeforeDate}`); // Debugging line
+        console.log(`bestBeforeDate: ${bestBeforeDate}`);
         
         // Send data to backend
         fetch('/add_product_by_photo', {
@@ -121,69 +125,6 @@ function hinzufuegen() {
         return `${year}-${month}-${day}`;
     }
 
-////////////////////////////////////////////////////////////////////////////
-// Test function for removing a product by returning a list to the user
-////////////////////////////////////////////////////////////////////////////
-
-// function entfernen() {
-//     var selectedButtons = document.querySelectorAll('.selected');
-//     var personName;
-
-//     if (selectedButtons.length < 1) {
-//         setStatusMessage("Please select a person.", 3);
-//         return;
-//     }
-
-//     selectedButtons.forEach(button => {
-//         if (button.classList.contains('btn-pers')) {
-//             personName = button.innerText;
-//         }
-//     });
-
-//     // Request to list products for the selected user
-//     fetch('/list_products_for_user', {
-//         method: 'POST',
-//         headers: {
-//             'Content-Type': 'application/json',
-//         },
-//         body: JSON.stringify({ personName: personName }),
-//     })
-//     .then(response => response.json())
-//     .then(data => {
-//         // Display products in a popup and let the user select one to remove
-//         const productIdToRemove = displayProductsAndSelect(data); // Implement this function based on your UI framework
-
-//         // Request to remove the selected product
-//         fetch('/remove_product', {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//             },
-//             body: JSON.stringify({ productId: productIdToRemove }),
-//         })
-//         .then(response => response.json())
-//         .then(data => {
-//             console.log('Product removed successfully:', data);
-//         })
-//         .catch((error) => {
-//             console.error('Error removing product:', error);
-//         });
-//     })
-//     .catch((error) => {
-//         console.error('Error listing products:', error);
-//     });
-// }
-////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////
-
-
-// // Example of attaching these functions to button clicks
-// document.getElementById('addProductByPhotoButton').addEventListener('click', addProductByPhoto);
-// document.getElementById('addProductToMdButton').addEventListener('click', () => addProductToMd('ExampleProductName'));
- 
-// Implementierung
-
-
 function abbrechen() {
     document.querySelectorAll('.selected').forEach(button => {
         button.classList.remove('selected');
@@ -212,9 +153,7 @@ function entfernen(event) {
         }
     });
     toggleModal(event);
-    // wurde auskommentiert, da Fehler in der Konsole :ReferenceError: user_id is not defined
-    // console.log("Trigger Entfernen with PersonId " + user_id, " PersonDisplayName " + personDisplayName);
-
+    
     const url= '/user/' + personName + '/products';
     // Fetch products for the selected user
     fetch(url, {

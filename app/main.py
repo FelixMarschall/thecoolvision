@@ -40,6 +40,8 @@ log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Frontend Routes
+
+
 @app.route("/")
 def index():
     users = api.get("users")
@@ -57,32 +59,35 @@ def get_stock():
         return "No stock available", 404
     return stock, 200
 
-@app.route("/add_product_by_photo" , methods=["POST"])
+
+@app.route("/add_product_by_photo", methods=["POST"])
 def add_product_by_photo():
     data = request.json
     personName = data.get('personName')
     bestBeforeDate = data.get('bestBeforeDate')
     masterdata = api.get("objects/products")
     generated_name = openapi.process_image("app/temp/image.jpg")
-    #generated_name = "PetersErbsen"
+    # generated_name = "PetersErbsen"
 
     for product in masterdata:
         if product['name'] == generated_name:
             product_id = product['id']
-            add_product(product_id, bestBeforeDate, personName) 
-            return jsonify({"message": "Product added successfully", "product_id": product_id}), 200 # if function doesnt work, delete this line
+            add_product(product_id, bestBeforeDate, personName)
+            # if function doesnt work, delete this line
+            return jsonify({"message": "Product added successfully", "product_id": product_id}), 200
     else:
-        response, status = add_product_to_md(generated_name)  
+        response, status = add_product_to_md(generated_name)
         created_product_id = response['created_object_id']
         add_product(created_product_id, bestBeforeDate, personName)
-        return jsonify({"message": "Product added successfully", "product_id": created_product_id}), 200 # if function doesnt work, delete this line
+        # if function doesnt work, delete this line
+        return jsonify({"message": "Product added successfully", "product_id": created_product_id}), 200
 
 
 def add_product_to_md(name):
     description = ""
     location_id = 2
-    qu_id_purchase = 2 #pack=3 oder Piece=2
-    qu_id_stock = 2 #pack=3 oder Piece=2 
+    qu_id_purchase = 2  # pack=3 oder Piece=2
+    qu_id_stock = 2  # pack=3 oder Piece=2
 
     data = {
         "name": name,
@@ -92,44 +97,46 @@ def add_product_to_md(name):
         "qu_id_stock": qu_id_stock,
     }
     response = api.post(f'objects/products', data)
-    #print(response.json())
+    # print(response.json())
     return response.json(), 200
 
 
 def add_product(product_id, bestBeforeDate, personName):
-        amount = 1
-        price = 1
-        transaction_type = "purchase"
-        best_before_date = bestBeforeDate
-        person = personName
+    amount = 1
+    price = 1
+    transaction_type = "purchase"
+    best_before_date = bestBeforeDate
+    person = personName
 
-        data = {
-            "amount": amount,
-            "best_before_date": best_before_date,
-            "transaction_type": transaction_type,
-            "price": price,
-            "note": personName,
-            # "userfield": 
-            # { "person": person },# ToDO: wird userfield so richtig übergeben?
-        }
+    data = {
+        "amount": amount,
+        "best_before_date": best_before_date,
+        "transaction_type": transaction_type,
+        "price": price,
+        "note": personName,
+        # "userfield":
+        # { "person": person },# ToDO: wird userfield so richtig übergeben?
+    }
 
-        response = api.post(f'stock/products/{product_id}/add', data)
-        #print(response.status_code, response.text)
-        return response.json, 200
+    response = api.post(f'stock/products/{product_id}/add', data)
+    # print(response.status_code, response.text)
+    return response.json, 200
 
-############# this remove function is working #############  
+############# this remove function is working #############
+
+
 @app.route('/remove_product', methods=['POST'])
 def remove_product():
     data = request.json
     product_id = int(data.get('productId'))
-    #product_id = request.form.get('productIdToRemoveInt')
-    #product_id_int = int(product_id)
-    #product_id = int(request.form.get('productIdToRemoveInt'))
+    # product_id = request.form.get('productIdToRemoveInt')
+    # product_id_int = int(product_id)
+    # product_id = int(request.form.get('productIdToRemoveInt'))
     # try:
-    #     product_id = int(request.form.get('productIdToRemove'))  
+    #     product_id = int(request.form.get('productIdToRemove'))
     # except (ValueError, TypeError):
     #     return jsonify({"error": "product_id invalid"}), 400
-    
+
     amount = 1
     spoiled = False
 
@@ -186,7 +193,7 @@ def remove_product():
 #         person = product["userfields"]
 #         list_of_products.append([])
 
-        
+
 #         # get all entries for each product id
 #         entries = api.get(f"stock/products/{product_id}/entries")
 #         # iterate over all entries for a given product
@@ -200,7 +207,7 @@ def remove_product():
 #     user = request.form.get('PersonName')
 #     ###################################
 
-#     # iterate trough all entries to find 
+#     # iterate trough all entries to find
 #     for entry in list_of_products:
 #         # if note (user name) is equal to the wanted user, the product ids are appended
 #         if entry[1] == user:
@@ -216,28 +223,32 @@ def remove_product():
 
 @app.route("/user/<personName>/products", methods=["GET"])
 def list_products_for_user(personName: str):
-    raw_stocks = api.get("objects/stock") # <-- has the note or person field
+    raw_stocks = api.get("objects/stock")  # <-- has the note or person field
     raw_products = api.get("objects/products")
-    
+
     list_of_entries = []
     for stock in raw_stocks:
-        list_of_entries.append((stock['product_id'], stock['note'], stock['best_before_date']))
+        list_of_entries.append(
+            (stock['product_id'], stock['note'], stock['best_before_date']))
 
     # remove touple duplicates from list
     list_of_entries = list(set(list_of_entries))
 
     # only keep entries with the wanted user
-    list_of_entries = [entry for entry in list_of_entries if entry[1] == personName]
-    
+    list_of_entries = [
+        entry for entry in list_of_entries if entry[1] == personName]
+
     found_products = []
 
     for entry in list_of_entries:
         for product in raw_products:
             if entry[0] == product['id']:
-                found_products.append({"id": product['id'], "name": product['name'], "best_before_date": entry[2]})
+                found_products.append(
+                    {"id": product['id'], "name": product['name'], "best_before_date": entry[2]})
 
     logging.debug(f"Found products for user {personName}: {found_products}")
     return found_products, 200
+
 
 @app.route("/process_image", methods=["POST"])
 def process_image():
@@ -248,6 +259,7 @@ def process_image():
     file.save("app/temp/image.jpg")
     logging.info("Image saved successfully")
     return "Image data processed successfully", 200
+
 
 @app.route("/users", methods=["GET"])
 def get_users():
