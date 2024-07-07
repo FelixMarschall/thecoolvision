@@ -23,7 +23,7 @@ if os.path.isfile("app/config.yaml"):
         grocy_url = config['grocy']['api_url']
         openai_key = config['openai']['api_key']
 
-if os.path.isfile("/data/options.json") and grocy_key is None and openai_key is None:
+elif os.path.isfile("/data/options.json"):
     with open('/data/options.json', "r") as json_file:
         logging.info("Using HomeAssistant json configuration file")
         options_config = json.load(json_file)

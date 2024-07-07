@@ -4,7 +4,7 @@ from urllib.parse import urljoin
 class GrocyAPI:
     def __init__(self, base_url, api_key):
         # check if base url and api key have values bigger than 0
-        if len(base_url) == 0 or len(api_key) == 0 or base_url is None or api_key is None:
+        if base_url is None or api_key is None or len(base_url) == 0 or len(api_key) == 0:
             raise ValueError("base_url and api_key must have values")
 
         self.base_url = base_url
