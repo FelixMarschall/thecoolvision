@@ -1,13 +1,15 @@
+@media (max-width: 768px) {
+    .mhd-buttons {
+        padding: 0; /* Reduced padding for tablets */
+    }
+}
+
 .btn-mhd {
     margin-top: 2%;
     padding: 10px;
     width: 70%;
     cursor: pointer;
     transition: background-color 0.3s;
-}
-
-.mhd-buttons {
-    padding-top: 10%;
 }
 
 .darkmode {
@@ -63,7 +65,7 @@
 }
 
 .button-column {
-    display: flex;
+    /* display: flex; */
     flex-direction: column;
     gap: 10px;
 }
@@ -78,7 +80,7 @@
     display: grid;
     grid-template-columns: auto auto;
     gap: 10px;
-    padding: 10px;
+    /* padding: 10px; */
     padding-top: 20px;
 }
 
@@ -118,7 +120,7 @@
     position: relative;
     width: 640px;
     height: 450px;
-    margin-top: 5%;
+    /* margin-top: 5%; */
 }
 
 .video-feed {
