@@ -44,11 +44,11 @@ function hinzufuegen() {
     var mhdDelay, mhdUnit, personName;
 
     if (selectedButtons.length < 2) {
-        setStatusMessage("Please select a person and a best before date.", 3);
+        setStatusMessage("Bitte wähle eine Person und ein Mhd-Datum aus.", 3);
         return;
     } 
     if (!video.paused) {
-        setStatusMessage("Please take a photo of the item.", 3);
+        setStatusMessage("Bitte speichere ein Bild ab.", 3);
         return;
     }
 
@@ -130,7 +130,7 @@ function abbrechen() {
         button.classList.remove('selected');
     });
     video.play();
-    takePhotoButton.innerHTML = "Take a photo 📸";
+    takePhotoButton.innerHTML = "Foto aufnehmen 📸";
 }
 
 // Test der funktion entfernen(die hier funktioniert)
@@ -143,7 +143,7 @@ function entfernen(event) {
     
     // Check if a person button is selected
     if (!personButton) {
-        setStatusMessage("Please select a person to remove inventory from.", 3);
+        setStatusMessage("Bitte wähle eine Peron aus, um das Inventar zu bearbeiten.", 3);
         return;
     }
     var personName; // Declare the personName variable
@@ -504,7 +504,7 @@ function startPhotoProcess() {
             // Stop the video
             video.pause();
             overlay.innerText = "";
-            takePhotoButton.innerHTML = "Retake the photo 📸";
+            takePhotoButton.innerHTML = "Foto neu aufnehmen 📸";
             clearInterval(countdownInterval);
         } else {
             overlay.innerText = countdown;
