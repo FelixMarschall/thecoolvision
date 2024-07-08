@@ -206,6 +206,7 @@ function entfernen(event) {
             console.log('Product removed successfully:', data);
             // Select the status message element
             setStatusMessage("Produkt erfolgreich entfernt.", 1);
+            abbrechen();
         })
         .catch((error) => {
             console.error('Error removing product:', error);
@@ -510,5 +511,5 @@ function startPhotoProcess() {
             overlay.innerText = countdown;
             countdown--;
         }
-    }, 100);
+    }, 400);
 }
