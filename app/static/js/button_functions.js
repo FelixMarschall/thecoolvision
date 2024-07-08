@@ -82,7 +82,7 @@ function hinzufuegen() {
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
-            setStatusMessage("Product added successfully.", 1);
+            setStatusMessage("Produkt erfolgreich hinzugefügt.", 1);
             abbrechen();
         })
         .catch((error) => {
@@ -205,7 +205,7 @@ function entfernen(event) {
         .then(data => {
             console.log('Product removed successfully:', data);
             // Select the status message element
-            setStatusMessage("Product removed successfully.", 1);
+            setStatusMessage("Produkt erfolgreich entfernt.", 1);
         })
         .catch((error) => {
             console.error('Error removing product:', error);
