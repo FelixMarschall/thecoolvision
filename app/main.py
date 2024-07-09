@@ -269,6 +269,9 @@ def list_all_products():
                 all_products.append(
                     {"id": product['id'], "name": product['name'], "best_before_date": entry[2], "person": entry[1]})
     logging.debug(f"Found all products: {all_products}")
+
+    # sort by person name
+    all_products = sorted(all_products, key=lambda x: x['person'])
     return all_products, 200
 
 @app.route("/process_image", methods=["POST"])

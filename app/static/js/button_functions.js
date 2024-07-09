@@ -15,7 +15,7 @@ function setStatusMessage(statusMessageText, time) {
     statusMessage.hidden = false;
     setTimeout(() => {
         statusMessage.hidden = true;
-    }, 1000*time); // 3 seconds
+    }, 1000 * time); // 3 seconds
 }
 
 function selectButton(selectedId) {
@@ -46,7 +46,7 @@ function hinzufuegen() {
     if (selectedButtons.length < 2) {
         setStatusMessage("Bitte wähle eine Person und ein Mhd-Datum aus.", 3);
         return;
-    } 
+    }
     if (!video.paused) {
         setStatusMessage("Bitte speichere ein Bild ab.", 3);
         return;
@@ -57,28 +57,28 @@ function hinzufuegen() {
             mhdUnit = getUnitSelectedButton(button.id);
             mhdDelay = getAmountSelectedButton(button.id);
 
-        console.log(`mhdUnit: ${mhdUnit}, mhdDelay: ${mhdDelay}`); // Debugging line
+            console.log(`mhdUnit: ${mhdUnit}, mhdDelay: ${mhdDelay}`); // Debugging line
 
         } else if (button.classList.contains('btn-pers')) {
             personName = button.innerText;
         }
-    });    
-        // Calculate best before date based on mhdUnit and mhdDelay
-        var bestBeforeDate = calculateBestBeforeDate(mhdDelay, mhdUnit);
+    });
+    // Calculate best before date based on mhdUnit and mhdDelay
+    var bestBeforeDate = calculateBestBeforeDate(mhdDelay, mhdUnit);
 
-        console.log(`bestBeforeDate: ${bestBeforeDate}`);
-        
-        // Send data to backend
-        fetch('/add_product_by_photo', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                personName: personName,
-                bestBeforeDate: bestBeforeDate
-            }),
-        })
+    console.log(`bestBeforeDate: ${bestBeforeDate}`);
+
+    // Send data to backend
+    fetch('/add_product_by_photo', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            personName: personName,
+            bestBeforeDate: bestBeforeDate
+        }),
+    })
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
@@ -88,42 +88,42 @@ function hinzufuegen() {
         .catch((error) => {
             console.error('Error:', error);
         });
+}
+
+function calculateBestBeforeDate(mhdDelay, mhdUnit) {
+    const date = new Date();
+    mhdDelay = parseInt(mhdDelay, 10); // Ensure delay is an integer
+
+    switch (mhdUnit) {
+        case 'Tag':
+            date.setDate(date.getDate() + mhdDelay);
+            break;
+        case 'Tage':
+            date.setDate(date.getDate() + mhdDelay);
+            break;
+        case 'Woche':
+            date.setDate(date.getDate() + mhdDelay * 7);
+            break;
+        case 'Wochen':
+            date.setDate(date.getDate() + mhdDelay * 7);
+            break;
+        case 'Monat':
+            date.setMonth(date.getMonth() + mhdDelay);
+            break;
+        case 'Monate':
+            date.setMonth(date.getMonth() + mhdDelay);
+            break;
+        default:
+            throw new Error('Invalid unit provided. Use "days", "weeks", or "months".');
     }
 
-    function calculateBestBeforeDate(mhdDelay, mhdUnit) {
-        const date = new Date();
-        mhdDelay = parseInt(mhdDelay, 10); // Ensure delay is an integer
-    
-        switch (mhdUnit) {
-            case 'Tag':
-                date.setDate(date.getDate() + mhdDelay);
-                break;
-            case 'Tage':
-                date.setDate(date.getDate() + mhdDelay);
-                break;
-            case 'Woche':
-                date.setDate(date.getDate() + mhdDelay * 7);
-                break;
-            case 'Wochen':
-                date.setDate(date.getDate() + mhdDelay * 7);
-                break;
-            case 'Monat':
-                date.setMonth(date.getMonth() + mhdDelay);
-                break;    
-            case 'Monate':
-                date.setMonth(date.getMonth() + mhdDelay);
-                break;
-            default:
-                throw new Error('Invalid unit provided. Use "days", "weeks", or "months".');
-        }
-    
-        // Format the date to YYYY-MM-DD
-        const year = date.getFullYear();
-        const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is 2 digits
-        const day = date.getDate().toString().padStart(2, '0'); // Ensure day is 2 digits
-    
-        return `${year}-${month}-${day}`;
-    }
+    // Format the date to YYYY-MM-DD
+    const year = date.getFullYear();
+    const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Ensure month is 2 digits
+    const day = date.getDate().toString().padStart(2, '0'); // Ensure day is 2 digits
+
+    return `${year}-${month}-${day}`;
+}
 
 function abbrechen() {
     document.querySelectorAll('.selected').forEach(button => {
@@ -137,10 +137,10 @@ function abbrechen() {
 function entfernen(event) {
     // Get all selected buttons
     var selectedButtons = document.querySelectorAll('.selected');
-    
+
     // Find a selected person button
     var personButton = Array.from(selectedButtons).find(button => button.classList.contains('btn-pers'));
-    
+
     // Check if a person button is selected
     if (!personButton) {
         setStatusMessage("Bitte wähle eine Peron aus, um das Inventar zu bearbeiten.", 3);
@@ -153,8 +153,8 @@ function entfernen(event) {
         }
     });
     toggleModal(event);
-    
-    const url= '/user/' + personName + '/products';
+
+    const url = '/user/' + personName + '/products';
     // Fetch products for the selected user
     fetch(url, {
         method: 'GET',
@@ -162,59 +162,59 @@ function entfernen(event) {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => {
-        // Check if the response is OK and the content type is JSON
-        if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
-            return response.json(); // Parse as JSON if the response is JSON
-        } else {
-            return response.text(); // Otherwise, return as text
-        }
-    })
-    .then(async data => {  // Use async to await the displayProductsAndSelect function
-        console.log("Received product list:", data); // Log the list received from the backend
-
-        // toggleModal(event);
-
-        // Display products in a modal popup and let the user select one to remove
-        // Wait for the promise to resolve and get the selected product ID
-        const productIdToRemove = await displayProductsAndSelect(data); 
-        console.log("Selected Product ID:", productIdToRemove); // Log the selected product ID
-        if (!productIdToRemove) {
-            console.log("No product selected for removal.");
-            return;
-        }
-        // const productIdToRemoveInt = parseInt(productIdToRemove, 10); // Ensure the ID is an integer
-        // Request to remove the selected product
-        fetch('/remove_product', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ productId: productIdToRemove }),
-        })
         .then(response => {
-            if (!response.ok) {
-                throw new Error(`Network response was not ok, status: ${response.status}`);
+            // Check if the response is OK and the content type is JSON
+            if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
+                return response.json(); // Parse as JSON if the response is JSON
+            } else {
+                return response.text(); // Otherwise, return as text
             }
-            const contentType = response.headers.get('Content-Type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new Error('Received non-JSON response from server');
-            }
-            return response.json();
         })
-        .then(data => {
-            console.log('Product removed successfully:', data);
-            // Select the status message element
-            setStatusMessage("Produkt erfolgreich entfernt.", 1);
-            abbrechen();
+        .then(async data => {  // Use async to await the displayProductsAndSelect function
+            console.log("Received product list:", data); // Log the list received from the backend
+
+            // toggleModal(event);
+
+            // Display products in a modal popup and let the user select one to remove
+            // Wait for the promise to resolve and get the selected product ID
+            const productIdToRemove = await displayProductsAndSelect(data);
+            console.log("Selected Product ID:", productIdToRemove); // Log the selected product ID
+            if (!productIdToRemove) {
+                console.log("No product selected for removal.");
+                return;
+            }
+            // const productIdToRemoveInt = parseInt(productIdToRemove, 10); // Ensure the ID is an integer
+            // Request to remove the selected product
+            fetch('/remove_product', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ productId: productIdToRemove }),
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Network response was not ok, status: ${response.status}`);
+                    }
+                    const contentType = response.headers.get('Content-Type');
+                    if (!contentType || !contentType.includes('application/json')) {
+                        throw new Error('Received non-JSON response from server');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Product removed successfully:', data);
+                    // Select the status message element
+                    setStatusMessage("Produkt erfolgreich entfernt.", 1);
+                    abbrechen();
+                })
+                .catch((error) => {
+                    console.error('Error removing product:', error);
+                });
         })
         .catch((error) => {
-            console.error('Error removing product:', error);
+            console.error('Error fetching products:', error);
         });
-    })
-    .catch((error) => {
-        console.error('Error fetching products:', error);
-    });
 }
 
 function inhalt_auflisten(event) {
@@ -226,19 +226,19 @@ function inhalt_auflisten(event) {
             'Content-Type': 'application/json',
         },
     })
-    .then(response => {
-        // display content as table with persons and items
-        if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
-            return response.json(); // Parse as JSON if the response is JSON
-        } else {
-            return response.text(); // Otherwise, return as text
-        }
-    }).then(data => {
-        displayAllProducts(data);
-    }).catch((error) => {
-        console.error('Error:', error);
-    });
-                
+        .then(response => {
+            // display content as table with persons and items
+            if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
+                return response.json(); // Parse as JSON if the response is JSON
+            } else {
+                return response.text(); // Otherwise, return as text
+            }
+        }).then(data => {
+            displayAllProducts(data);
+        }).catch((error) => {
+            console.error('Error:', error);
+        });
+
     toggleModal(event);
 }
 
@@ -247,7 +247,6 @@ function displayAllProducts(products) {
     const listAllProductsDiv = document.getElementById('listAllProducts');
     listAllProductsDiv.innerHTML = ''; // Clear existing content
 
-    // Create a table
     const table = document.createElement('table');
     table.setAttribute('class', 'products-table'); // Add a class for styling if needed
 
@@ -257,9 +256,11 @@ function displayAllProducts(products) {
     // Assuming product object keys can be used as headers
     if (products.length > 0) {
         Object.keys(products[0]).forEach(key => {
-            const th = document.createElement('th');
-            th.textContent = key.toUpperCase(); // Convert header keys to uppercase
-            headerRow.appendChild(th);
+            if (key.toUpperCase() !== 'ID' && key.toUpperCase() !== 'BEST_BEFORE_DATE') { // Skip 'ID' and 'BEST_BEFORE_DATE'
+                const th = document.createElement('th');
+                th.textContent = key.toUpperCase(); // Convert header keys to uppercase
+                headerRow.appendChild(th);
+            }
         });
         thead.appendChild(headerRow);
         table.appendChild(thead);
@@ -269,15 +270,16 @@ function displayAllProducts(products) {
     const tbody = document.createElement('tbody');
     products.forEach(product => {
         const row = document.createElement('tr');
-        Object.values(product).forEach(value => {
-            const td = document.createElement('td');
-            td.textContent = value; // Add product details to each cell
-            row.appendChild(td);
+        Object.keys(product).forEach(key => {
+            if (key.toUpperCase() !== 'ID' && key.toUpperCase() !== 'BEST_BEFORE_DATE') { // Skip 'ID' and 'BEST_BEFORE_DATE'
+                const td = document.createElement('td');
+                td.textContent = product[key]; // Add product details to each cell
+                row.appendChild(td);
+            }
         });
         tbody.appendChild(row);
     });
     table.appendChild(tbody);
-
     // Append the table to the div
     listAllProductsDiv.appendChild(table);
 }
@@ -288,7 +290,7 @@ function displayProductsAndSelect(products) {
     console.log(typeof products); // Check the type
     if (Array.isArray(products)) {
         products.forEach(product => {
-        console.log(`Product name: ${product.name}`);
+            console.log(`Product name: ${product.name}`);
         });
     } else {
         console.log('products is not an array:', products);
@@ -299,7 +301,7 @@ function displayProductsAndSelect(products) {
         if (!productListElement) {
             console.error('productList element not found');
         }
-        
+
         // Step 2: Check if the element exists
         if (productListElement) {
             // The element exists, you can safely manipulate it here
@@ -358,8 +360,8 @@ function displayProductsAndSelect(products) {
             input.onclick = () => {
                 resolve(productID); // Resolve the promise with the selected product ID
                 // closeModal(document.getElementById('productSelectModal'));
-                closeModal(document.getElementById('modal-remove-item')); 
-                };
+                closeModal(document.getElementById('modal-remove-item'));
+            };
 
             // Append input to fieldset
             fieldset.appendChild(input);
@@ -369,9 +371,9 @@ function displayProductsAndSelect(products) {
 
             // Add paragraph for each bestBeforeDate
             const paragraph = document.createElement('p');
-                paragraph.textContent = `MhD für ${productName}`;
-                paragraph.style.textAlign = "center";
-                details.appendChild(paragraph);
+            paragraph.textContent = `MhD für ${productName}`;
+            paragraph.style.textAlign = "center";
+            details.appendChild(paragraph);
 
             // Add paragraph for each bestBeforeDate
             for (const date in bestBeforeDateCounts) {
@@ -383,14 +385,14 @@ function displayProductsAndSelect(products) {
         });
 
         // openModal(document.getElementById('productSelectModal'));
-        openModal(document.getElementById('modal-remove-item')); 
+        openModal(document.getElementById('modal-remove-item'));
     });
 }
 
 // Function to get best before date counts for a specific name
 function getBestBeforeDateCounts(products, product_name) {
     const filteredList = products.filter(item => item.name === product_name);
-    return filteredList.reduce((acc, {best_before_date}) => {
+    return filteredList.reduce((acc, { best_before_date }) => {
         if (!acc[best_before_date]) {
             acc[best_before_date] = 0;
         }
@@ -403,14 +405,14 @@ function getBestBeforeDateCounts(products, product_name) {
 // displayProductsAndSelect(products).then(selectedProductId => {
 //     console.log("Selected Product ID:", selectedProductId);
 // });
-   
+
 // function entfernen(event) {
 //     // Get all selected buttons
 //     var selectedButtons = document.querySelectorAll('.selected');
-    
+
 //     // Find a selected person button
 //     var personButton = Array.from(selectedButtons).find(button => button.classList.contains('btn-pers'));
-    
+
 //     // Check if a person button is selected
 //     if (!personButton) {
 //         setStatusMessage("Please select a person to remove inventory from.", 3);
