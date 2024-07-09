@@ -249,6 +249,27 @@ def list_products_for_user(personName: str):
     logging.debug(f"Found products for user {personName}: {found_products}")
     return found_products, 200
 
+@app.route("/users/products", methods=["GET"])
+def list_all_products():
+    raw_stocks = api.get("objects/stock")
+    raw_products = api.get("objects/products")
+
+    list_of_entries = []
+    for stock in raw_stocks:
+        list_of_entries.append(
+            (stock['product_id'], stock['note'], stock['best_before_date']))
+    
+    # remove touple duplicates from list
+    list_of_entries = list(set(list_of_entries))
+
+    all_products = []
+    for entry in list_of_entries:
+        for product in raw_products:
+            if entry[0] == product['id'] and entry[1] is not None:
+                all_products.append(
+                    {"id": product['id'], "name": product['name'], "best_before_date": entry[2], "person": entry[1]})
+    logging.debug(f"Found all products: {all_products}")
+    return all_products, 200
 
 @app.route("/process_image", methods=["POST"])
 def process_image():

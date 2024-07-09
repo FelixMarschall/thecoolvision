@@ -216,6 +216,72 @@ function entfernen(event) {
         console.error('Error fetching products:', error);
     });
 }
+
+function inhalt_auflisten(event) {
+    // fetch data from the server
+    // get /users/products"
+    fetch('/users/products', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        // display content as table with persons and items
+        if (response.ok && response.headers.get('Content-Type')?.includes('application/json')) {
+            return response.json(); // Parse as JSON if the response is JSON
+        } else {
+            return response.text(); // Otherwise, return as text
+        }
+    }).then(data => {
+        displayAllProducts(data);
+    }).catch((error) => {
+        console.error('Error:', error);
+    });
+                
+    toggleModal(event);
+}
+
+function displayAllProducts(products) {
+    // Assuming 'products' is an array of objects where each object represents a product
+    const listAllProductsDiv = document.getElementById('listAllProducts');
+    listAllProductsDiv.innerHTML = ''; // Clear existing content
+
+    // Create a table
+    const table = document.createElement('table');
+    table.setAttribute('class', 'products-table'); // Add a class for styling if needed
+
+    // Create table header
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    // Assuming product object keys can be used as headers
+    if (products.length > 0) {
+        Object.keys(products[0]).forEach(key => {
+            const th = document.createElement('th');
+            th.textContent = key.toUpperCase(); // Convert header keys to uppercase
+            headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+    }
+
+    // Create table body
+    const tbody = document.createElement('tbody');
+    products.forEach(product => {
+        const row = document.createElement('tr');
+        Object.values(product).forEach(value => {
+            const td = document.createElement('td');
+            td.textContent = value; // Add product details to each cell
+            row.appendChild(td);
+        });
+        tbody.appendChild(row);
+    });
+    table.appendChild(tbody);
+
+    // Append the table to the div
+    listAllProductsDiv.appendChild(table);
+}
+
 // Display Products and Select
 function displayProductsAndSelect(products) {
     console.log(products);
@@ -248,7 +314,7 @@ function displayProductsAndSelect(products) {
 
         if (!products || !Array.isArray(products) || products.length === 0) {
             const noProductsParagraph = document.createElement('p');
-            noProductsParagraph.textContent = 'There are no products for this user.';
+            noProductsParagraph.textContent = 'Es gibt keine Produkte für diesen Nutzer.';
             productListElement.appendChild(noProductsParagraph);
 
             console.log('No products found:', products);
@@ -303,7 +369,7 @@ function displayProductsAndSelect(products) {
 
             // Add paragraph for each bestBeforeDate
             const paragraph = document.createElement('p');
-                paragraph.textContent = `Best Before Dates for ${productName}`;
+                paragraph.textContent = `MhD für ${productName}`;
                 paragraph.style.textAlign = "center";
                 details.appendChild(paragraph);
 

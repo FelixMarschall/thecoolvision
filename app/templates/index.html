@@ -78,6 +78,8 @@
                     data-feather="file-plus"></i></button>
             <button class="pico-background-amber-250 big-button-action" data-target="modal-remove-item"
                 onclick="entfernen(event)">Entfernen <i data-feather="trash-2"></i></button>
+            <button class="pico-background-pink-250 big-button-action" data-target="modal-list-all-items"
+                onclick="inhalt_auflisten(event)">Auflisten <i data-feather="list"></i></button>
         </div>
         <!-- ./ General control buttons -->
     </div>
@@ -160,16 +162,34 @@
             <footer>
                 <a href="#cancel" role="button" class="secondary" data-target="modal-remove-item"
                     onclick="toggleModal(event)">
-                    Cancel
+                    Abbrechen
                 </a>
             </footer>
         </article>
     </dialog>
     <!-- ./ Modal remove item -->
-      
-    <script>
-
-    </script>
+    
+    <!-- Modal list all items -->
+    <dialog id="modal-list-all-items">
+        <article>
+            <header>
+                <a href="#close" aria-label="Close" rel="prev" data-target="modal-list-all-items"
+                    onclick="toggleModal(event)"></a>
+                <h3>Eingebucht</h3>
+            </header>
+            <p>
+                <!-- Dynamic product list insertion point -->
+                <div id="listAllProducts">
+                    <!-- Product buttons will be dynamically inserted here -->
+                </div>
+            </p>
+            <footer>
+                <a href="#cancel" role="button" class="secondary" data-target="modal-list-all-items"
+                    onclick="toggleModal(event)">
+                    Abbrechen
+                </a>
+            </footer>
+        </article>
 
 
     <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
