@@ -40,8 +40,6 @@ log = logging.getLogger(__name__)
 app = Flask(__name__)
 
 # Frontend Routes
-
-
 @app.route("/")
 def index():
     users = api.get("users")
@@ -97,7 +95,6 @@ def add_product_to_md(name):
         "qu_id_stock": qu_id_stock,
     }
     response = api.post(f'objects/products', data)
-    # print(response.json())
     return response.json(), 200
 
 
@@ -279,6 +276,12 @@ def process_image():
     if "image" not in request.files:
         logging.error("No image file in request")
         return "No image file in request", 400
+    
+    # check if folder exists, if not create it
+    if not os.path.exists("app/temp"):
+        os.makedirs("app/temp")
+        logging.info("Created temp folder")
+    
     file = request.files["image"]
     file.save("app/temp/image.jpg")
     logging.info("Image saved successfully")
