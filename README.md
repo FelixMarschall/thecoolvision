@@ -8,6 +8,8 @@
 
 ## Backend
 
+## Grocy
+
 ## Installation on Home Assistant
 
 ## Installation on Server
@@ -24,6 +26,4 @@ docker build -t coolvision-app .
 docker run -p 5000:5000 coolvision-app
 ```
 
-4. open http://172.21.80.246:5000
-
-
+4. open http://172.21.80.246:5000   
