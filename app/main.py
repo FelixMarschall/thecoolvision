@@ -57,7 +57,9 @@ def get_stock():
         return "No stock available", 404
     return stock, 200
 
-
+# This function checks if the identified product is already in the masterdata.
+# If not, it will be added to the masterdata and then added to the stock. 
+# If so, it will be added directly to the stock.
 @app.route("/add_product_by_photo", methods=["POST"])
 def add_product_by_photo():
     data = request.json
@@ -65,7 +67,6 @@ def add_product_by_photo():
     bestBeforeDate = data.get('bestBeforeDate')
     masterdata = api.get("objects/products")
     generated_name = openapi.process_image("app/temp/image.jpg")
-    # generated_name = "PetersErbsen"
 
     for product in masterdata:
         if product['name'] == generated_name:
@@ -80,12 +81,12 @@ def add_product_by_photo():
         # if function doesnt work, delete this line
         return jsonify({"message": "Product added successfully", "product_id": created_product_id}), 200
 
-
+# This functions adds a product to the masterdata by its name.
 def add_product_to_md(name):
     description = ""
     location_id = 2
-    qu_id_purchase = 2  # pack=3 oder Piece=2
-    qu_id_stock = 2  # pack=3 oder Piece=2
+    qu_id_purchase = 2  # pack = 3 or Piece = 2
+    qu_id_stock = 2     # pack = 3 or Piece = 2
 
     data = {
         "name": name,
@@ -97,7 +98,7 @@ def add_product_to_md(name):
     response = api.post(f'objects/products', data)
     return response.json(), 200
 
-
+# This function adds a product to the stock by its product ID.
 def add_product(product_id, bestBeforeDate, personName):
     amount = 1
     price = 1
@@ -111,29 +112,16 @@ def add_product(product_id, bestBeforeDate, personName):
         "transaction_type": transaction_type,
         "price": price,
         "note": personName,
-        # "userfield":
-        # { "person": person },# ToDO: wird userfield so richtig übergeben?
     }
 
     response = api.post(f'stock/products/{product_id}/add', data)
-    # print(response.status_code, response.text)
     return response.json, 200
 
-############# this remove function is working #############
-
-
+# This function removes a product from the stock by its product ID.
 @app.route('/remove_product', methods=['POST'])
 def remove_product():
     data = request.json
     product_id = int(data.get('productId'))
-    # product_id = request.form.get('productIdToRemoveInt')
-    # product_id_int = int(product_id)
-    # product_id = int(request.form.get('productIdToRemoveInt'))
-    # try:
-    #     product_id = int(request.form.get('productIdToRemove'))
-    # except (ValueError, TypeError):
-    #     return jsonify({"error": "product_id invalid"}), 400
-
     amount = 1
     spoiled = False
 
@@ -178,46 +166,7 @@ def remove_product():
 #     return jsonify({"error": "No product found for the user"}), 404
 ##################### remove function with user/note check #####################
 
-##################### remove function for userfield (unfinished) #####################
-# @app.route("/list_products_for_user", methods=["GET"])
-# def list_products_for_user():
-#     # get stock
-#     stock = api.get("stock")
-#     list_of_products = []
-#     # iterate over stock
-#     for product in stock:
-#         # get each userfield in stock
-#         person = product["userfields"]
-#         list_of_products.append([])
-
-
-#         # get all entries for each product id
-#         entries = api.get(f"stock/products/{product_id}/entries")
-#         # iterate over all entries for a given product
-#         for entry in entries:
-#             # create list with product_id and the according user name
-#             list_of_entries.append([entry['product_id'], entry['note']])
-
-#     found_products = []
-#     ###################################
-#     #user = 'Peter'  # user name from UI needs to be implemented
-#     user = request.form.get('PersonName')
-#     ###################################
-
-#     # iterate trough all entries to find
-#     for entry in list_of_products:
-#         # if note (user name) is equal to the wanted user, the product ids are appended
-#         if entry[1] == user:
-#             found_products.append(entry[0])
-
-#     #print details for products (not essential)
-#     for product_id in found_products:
-#         product = api.get(f"stock/products/{product_id}")
-#         # here instead of printing the product ids need to be displayed
-#         # print(product['product']['name'])
-#     return found_products, 200
-##################### remove function for userfield (unfinished) #####################
-
+# This function lists all products for a specific user.
 @app.route("/user/<personName>/products", methods=["GET"])
 def list_products_for_user(personName: str):
     raw_stocks = api.get("objects/stock")  # <-- has the note or person field
@@ -246,6 +195,8 @@ def list_products_for_user(personName: str):
     logging.debug(f"Found products for user {personName}: {found_products}")
     return found_products, 200
 
+# This function lists all products for all users. 
+# So it gives a overview of the whole stock.
 @app.route("/users/products", methods=["GET"])
 def list_all_products():
     raw_stocks = api.get("objects/stock")
