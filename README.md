@@ -1,5 +1,14 @@
 # TheCoolVision
 
+## Project
+
+ This project is part of a university course Alltagsautomaiserung. The goal is to create a vision system that can be used to track the inventory of a fridge. Our goal for the project was to make it as user friendly as possible to interact with.
+
+- Aaron Kreis
+- Felix Marschall
+- Moritz Spohn
+
+Supervised by Fabian Rybinski.
 
 ## Architecture
 
@@ -41,7 +50,21 @@ HomeAssistant --> Addons --> TheCoolVision
 
 Choose the tab ```configuration``` and insert the parameters into it. 
 
+Within the context of the Everyday Automation internship, the following individuals contributed:
+
+- Aaron Kreis
+- Felix Marschall
+- Moritz Spohn
+
+They were supervised by Fabian Rybinski.
+
 ## Installation on Server
+It's possible to run this app without HomeAssistant.
+
+Use the docker file in this repo to build and run the flask app
+
+1. change directory to the folder where this file is.
+2. Buildllation on Server
 It's possible to run this app without HomeAssistant.
 
 Use the docker file in this repo to build and run the flask app
