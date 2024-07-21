@@ -137,35 +137,6 @@ def remove_product():
     return response.json(), 200
 
 
-##################### remove function with user/note check #####################
-# def remove_product():
-#     data = request.json
-#     user_name = data.get('userName')  # Assuming the user's name is passed in the request
-#     product_id = int(data.get('productId'))
-
-#     # Step 1: Fetch all products with the given product ID
-#     products = api.get(f'stock/products/{product_id}/entries')
-
-#     # Step 2: Iterate over the products
-#     for product in products:
-#         # Step 3: Check if the product belongs to the user
-#         if 'note' in product and product['note'] == user_name:
-#             # Found the product belonging to the user; proceed with removal
-#             amount = 1
-#             spoiled = False
-#             data = {
-#                 "amount": amount,
-#                 "spoiled": spoiled
-#             }
-#             # Here we are assuming each product has a unique identifier within the list of products with the same ID
-#             # This is necceassary to identify the specific product to remove
-#             response = api.post(f'stock/products/{product["unique_identifier"]}/consume', data)
-#             return response.json(), 200
-
-#     # If no product belonging to the user was found
-#     return jsonify({"error": "No product found for the user"}), 404
-##################### remove function with user/note check #####################
-
 # This function lists all products for a specific user.
 @app.route("/user/<personName>/products", methods=["GET"])
 def list_products_for_user(personName: str):
