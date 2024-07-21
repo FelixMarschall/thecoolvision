@@ -2,7 +2,7 @@
 
 ## Project
 
- This project is part of a university course Alltagsautomaiserung. The goal is to create a vision system that can be used to track the inventory of a fridge. Our goal for the project was to make it as user friendly as possible to interact with.
+ This project is part of a university course Alltagsautomatisierung. The goal is to create a vision system that can be used to track the inventory of a fridge. Our goal for the project was to make it as user friendly as possible to interact with.
 
 - Aaron Kreis
 - Felix Marschall
