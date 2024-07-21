@@ -36,27 +36,22 @@ TheCoolVision needs a token to access Grocy data.
 
 ## Install our App on Home Assistant
 
+[![Add to Home Assistant](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2FFelixMarschall%2FTheCoolVision_HA_Addon)
+
+Second Option:
+
 To install TheCoolVision as addon, you need to this link
+https://github.com/FelixMarschall/TheCoolVision_HA_Addon
+as a add on repo.
 
-https://github.com/FelixMarschall/HA_GrocyTablet
-
-as a add on repo. Or click on the link and use the blue button. 
-
+In Home Assistant go to ```Settings -> Addons -> Add-on store``` and search for ```TheCoolVision - Grocy Tablet Interaction```
 ### Configure
 
+#### Please modify with your configuration
+
+![Addon Config](doc/img/addon_config.png)
+
 You need to pass a Grocy token, OpenAI token and the Grocy instance URL to configure.
-
-HomeAssistant --> Addons --> TheCoolVision
-
-Choose the tab ```configuration``` and insert the parameters into it. 
-
-Within the context of the Everyday Automation internship, the following individuals contributed:
-
-- Aaron Kreis
-- Felix Marschall
-- Moritz Spohn
-
-They were supervised by Fabian Rybinski.
 
 ## Installation on Server
 It's possible to run this app without HomeAssistant.
