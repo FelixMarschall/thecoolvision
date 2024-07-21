@@ -1,3 +1,4 @@
+// Define some basic elements
 let takePhotoButton = document.querySelector("#take-photo-button");
 let statusMessage = document.querySelector("#status-message");
 let video = document.querySelector('video');
@@ -10,6 +11,7 @@ navigator.mediaDevices.getUserMedia({ video: true })
     })
     .catch(error => console.error('Error:', error));
 
+// Function to display status messages
 function setStatusMessage(statusMessageText, time) {
     statusMessage.innerText = statusMessageText;
     statusMessage.hidden = false;
@@ -18,6 +20,7 @@ function setStatusMessage(statusMessageText, time) {
     }, 1000 * time); // 3 seconds
 }
 
+// Function to select a button, does also deselect the relevant buttons
 function selectButton(selectedId) {
     // Check if the button is already selected
     var button = document.getElementById(selectedId);
@@ -39,6 +42,7 @@ function selectButton(selectedId) {
     }
 }
 
+// Function to add a product, checks if all the nessesary buttons are selected & picture is taken
 function hinzufuegen() {
     var selectedButtons = document.querySelectorAll('.selected');
     var mhdDelay, mhdUnit, personName;
@@ -90,6 +94,7 @@ function hinzufuegen() {
         });
 }
 
+// Function to calculate the best before date from the given delay and unit
 function calculateBestBeforeDate(mhdDelay, mhdUnit) {
     const date = new Date();
     mhdDelay = parseInt(mhdDelay, 10); // Ensure delay is an integer
@@ -125,6 +130,7 @@ function calculateBestBeforeDate(mhdDelay, mhdUnit) {
     return `${year}-${month}-${day}`;
 }
 
+// Function to reset the video and the selected buttons
 function abbrechen() {
     document.querySelectorAll('.selected').forEach(button => {
         button.classList.remove('selected');
@@ -217,6 +223,7 @@ function entfernen(event) {
         });
 }
 
+// Function to list the content
 function inhalt_auflisten(event) {
     // fetch data from the server
     // get /users/products"
@@ -242,6 +249,7 @@ function inhalt_auflisten(event) {
     toggleModal(event);
 }
 
+// Function to display all products
 function displayAllProducts(products) {
     // Assuming 'products' is an array of objects where each object represents a product
     const listAllProductsDiv = document.getElementById('listAllProducts');
@@ -401,52 +409,7 @@ function getBestBeforeDateCounts(products, product_name) {
     }, {});
 }
 
-// When you need to display the product selection modal
-// displayProductsAndSelect(products).then(selectedProductId => {
-//     console.log("Selected Product ID:", selectedProductId);
-// });
-
-// function entfernen(event) {
-//     // Get all selected buttons
-//     var selectedButtons = document.querySelectorAll('.selected');
-
-//     // Find a selected person button
-//     var personButton = Array.from(selectedButtons).find(button => button.classList.contains('btn-pers'));
-
-//     // Check if a person button is selected
-//     if (!personButton) {
-//         setStatusMessage("Please select a person to remove inventory from.", 3);
-//         return;
-//     }
-
-//     toggleModal(event);
-//     // console.log("Trigger Entfernen with PersonId " + personId, " PersonDisplayName " + personDisplayName);
-
-//     // make request to get item by id and add content to table with persons-items id, item-name
-//     fetch(`/users/${personUsername}/stock`, {
-//         method: 'GET',
-//     })
-//         .then((response) => response.json())
-//         .then((data) => {
-//             // console.log(data);            
-//             // insert array values into table with id <table id="persons-items">
-//             data.forEach(item => {
-//                 const row = tbody.insertRow();
-//                 const cell1 = row.insertCell(0);
-//                 const cell2 = row.insertCell(1);
-//                 const cell3 = row.insertCell(2);
-//                 const cell4 = row.insertCell(3);
-//                 cell1.innerHTML = item.id;
-//                 cell2.innerHTML = item.product.name;
-//                 cell3.innerHTML = item.amount;
-//                 cell4.innerHTML = `<a class="clickable-icon" onclick="deleteItem(event, ${item.id})"><i data-feather="trash-2"></i></a>`;
-//             });
-//             feather.replace();
-//         }).catch((error) => {
-//             console.error('Error:', error);
-//             // Optionally, update the UI to inform the user that an error occurred
-//         });
-// }    
+// Function to delete the item with the given ID
 function deleteItem(event, itemId) {
     event.preventDefault();
     console.log("Delete Item with ID " + itemId);
@@ -492,6 +455,7 @@ function decrease(buttonId) {
     checkGrammer(buttonId);
 }
 
+// Function to keep the grammer of the month, week and day buttons correct
 function checkGrammer(buttonID) {
     var button = document.getElementById(buttonID);
     var buttonText = button.innerText;
@@ -519,18 +483,21 @@ function checkGrammer(buttonID) {
     }
 }
 
+// Function to get the amount of the selected button (e.g. 3 for the days button)
 function getAmountSelectedButton(buttonId) {
     const button = document.getElementById(buttonId);
     const buttonTexts = button.innerText.split(' ')
     return parseInt(buttonTexts[0]);
 }
 
+// Function to get the unit of the selected button (e.g. "Tage" for the days button)
 function getUnitSelectedButton(buttonId) {
     const button = document.getElementById(buttonId);
     const buttonTexts = button.innerText.split(' ')
     return buttonTexts[1];
 }
 
+// Function to take a photo
 function takePhoto() {
     let canvas = document.createElement('canvas');
     canvas.width = video.videoWidth;
@@ -561,6 +528,7 @@ function takePhoto() {
         .catch(error => console.error('Error:', error));
 }
 
+// Function to start the photo process, includes the countdown
 function startPhotoProcess() {
     var overlay = document.querySelector(".countdown-overlay");
     var countdown = 3;
