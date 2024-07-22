@@ -83,6 +83,12 @@ docker run -p 5000:5000 coolvision-app
 ### Necessary SSL certificate
 Accessing the webcam via a browser requires an valid https connection. Means, the TheCoolVision app must be hosted with a valid ssl certificate (when installed as an addon -> the homeassistance instance)
 
+## Add User Buttons
+
+1. Create new user in Grocy ```Setting icon > Manage Users > Add```
+2. Username is the displayed name on the button
+3. save
+
 ## Frontend
 
 ## Backend
