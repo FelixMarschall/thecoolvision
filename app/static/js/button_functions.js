@@ -331,19 +331,43 @@ function displayProductsAndSelect(products) {
             return;
         }
 
-        // Extract unique names
-        const uniqueProducts = [...new Set(products.map(product => product.name))];
+        // TODO!!! REVIEW FUNCTION, ID and name not called correctly
+
+        products.forEach(product => {
+            console.log(`Product ID: ${product.id}, Name: ${product.name}` + " " + product.best_before_date);
+        });
+
+        const productMap = new Map();
+
+        // Aggregate products by name
+        products.forEach(product => {
+            const name = product.name;
+            const id = product.id;
+            const best_before_date = product.best_before_date;
+
+            if (!productMap.has(name)) {
+                productMap.set(name, { name, id, bestBeforeDates: [] });
+            }
+            productMap.get(name).bestBeforeDates.push(best_before_date);
+            console.log("ProductMap: ", productMap.get(name).bestBeforeDates);
+        });
+
+        // Convert map back to array format
+        let cleaned_products = Array.from(productMap.values());
+
+        console.log("Cleaned Products: ", cleaned_products);
+        console.log("Best Before Dates for first product: ", cleaned_products[0].bestBeforeDates);
+
 
         // Iterate over unique product names
-        uniqueProducts.forEach(productName => {
-            console.log(productName);
+        cleaned_products.forEach(product => {
+            let productName = product.name;
+            let productID = product.id;
+            let bestBeforeDates = product.bestBeforeDates;
 
-            productID = products.find(product => product.name === productName).id;
-
-            console.log(productID);
-
-            // Get bestBeforeDateCounts for the current productName
-            const bestBeforeDateCounts = getBestBeforeDateCounts(products, productName);
+            console.log("productID at beginning: " + productID);
+            console.log("productName at beginning: " + productName);
+            console.log("BestBeforeDates at beginning: " + bestBeforeDates);
 
             // Create fieldset element
             const fieldset = document.createElement('fieldset');
@@ -369,6 +393,7 @@ function displayProductsAndSelect(products) {
             input.setAttribute('type', 'submit');
             input.setAttribute('value', 'Entfernen');
 
+            console.log("productID before resolve: " + productID);
             input.onclick = () => {
                 console.log("resolve: " + productID);
                 resolve(productID); // Resolve the promise with the selected product ID
@@ -389,12 +414,13 @@ function displayProductsAndSelect(products) {
             details.appendChild(paragraph);
 
             // Add paragraph for each bestBeforeDate
-            for (const date in bestBeforeDateCounts) {
+            bestBeforeDates.forEach(date => {
+                console.log("Date in paragraph adding: ", date);
                 const paragraph = document.createElement('p');
                 paragraph.textContent = `${date}`;
                 paragraph.style.textAlign = "center";
                 details.appendChild(paragraph);
-            }
+            });
         });
 
         // openModal(document.getElementById('productSelectModal'));
