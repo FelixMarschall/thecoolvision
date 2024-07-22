@@ -336,7 +336,11 @@ function displayProductsAndSelect(products) {
 
         // Iterate over unique product names
         uniqueProducts.forEach(productName => {
+            console.log(productName);
+
             productID = products.find(product => product.name === productName).id;
+
+            console.log(productID);
 
             // Get bestBeforeDateCounts for the current productName
             const bestBeforeDateCounts = getBestBeforeDateCounts(products, productName);
@@ -366,6 +370,7 @@ function displayProductsAndSelect(products) {
             input.setAttribute('value', 'Entfernen');
 
             input.onclick = () => {
+                console.log("resolve: " + productID);
                 resolve(productID); // Resolve the promise with the selected product ID
                 // closeModal(document.getElementById('productSelectModal'));
                 closeModal(document.getElementById('modal-remove-item'));
@@ -407,24 +412,6 @@ function getBestBeforeDateCounts(products, product_name) {
         acc[best_before_date]++;
         return acc;
     }, {});
-}
-
-// Function to delete the item with the given ID
-function deleteItem(event, itemId) {
-    event.preventDefault();
-    console.log("Delete Item with ID " + itemId);
-    fetch(`/items/${itemId}`, {
-        method: 'DELETE',
-    })
-        .then((response) => response.json())
-        .then((data) => {
-            console.log(data);
-            // remove row from table
-            const table = document.getElementById("persons-items");
-            const tbody = table.tBodies[0];
-            const row = document.getElementById(itemId);
-            tbody.removeChild(row);
-        }).catch((error) => console.error('Error:', error));
 }
 
 // Function to increase the amount
