@@ -90,6 +90,8 @@ Accessing the webcam via a browser requires an valid https connection. Means, th
 3. save
 
 ## Frontend
+Because of the way the GrocyAPI works, products that are added multiple times with the same best before date cannot be displayed seperately or with a counter. This can lead to the counterintuitive behaviour of removing a product from the inventory and it still being displayed afterwards.
+If the same product is added with different best before dates, the best before dates will be displayed seperately. Removing such a product leads to the removal of the first one of this kind that has been added. This is also due to the GrocyAPI, that only allows the removal of a product with a given ID and not with a specific best before date.
 
 ## Backend
 This application integrates with Grocy and OpenAI to manage stock and product information through a Flask web server. Below are the main backend functions and their purposes:
